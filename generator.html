@@ -384,6 +384,9 @@ function checkPw() {
     <p class="result-title">生成完了</p>
     <p class="result-desc" id="resultDesc"></p>
     <a class="download-btn" id="downloadBtn" href="#" download="">HTMLをダウンロード</a>
+    <button class="download-btn" id="publishBtn" style="margin-top:12px;width:100%;cursor:pointer;border:none;">Presetryに公開する</button>
+    <p id="publishStatus" style="font-size:12px;color:var(--mid);margin-top:12px;min-height:16px;text-align:center;letter-spacing:0.05em;"></p>
+    <p id="publishUrl" style="font-size:12px;margin-top:8px;text-align:center;"></p>
   </div>
 </div>
 
@@ -592,7 +595,36 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
   downloadBtn.download = filename;
 
   document.getElementById('resultDesc').textContent =
-    `「${presetName}」の試着ページが生成されました。ダウンロードしたHTMLファイルを GitHub Pages の ${uploadPath} にアップロードしてください。`;
+    `「${presetName}」の試着ページが生成されました。`;
+
+  // 公開ボタンの設定
+  const publishBtn = document.getElementById('publishBtn');
+  publishBtn.onclick = async () => {
+    const status = document.getElementById('publishStatus');
+    const urlEl  = document.getElementById('publishUrl');
+    publishBtn.disabled = true;
+    status.textContent = '公開中...';
+    urlEl.textContent = '';
+
+    try {
+      const res = await fetch('https://presetry-push.pickn-photograph001.workers.dev', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: userSlug, presetSlug, html }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        status.textContent = '公開完了！';
+        urlEl.innerHTML = `<a href="${data.url}" target="_blank" style="color:var(--accent);text-decoration:underline;">${data.url}</a>`;
+      } else {
+        status.textContent = `エラー: ${data.error}`;
+        publishBtn.disabled = false;
+      }
+    } catch (e) {
+      status.textContent = 'ネットワークエラーが発生しました';
+      publishBtn.disabled = false;
+    }
+  };
 
   document.getElementById('resultEl').classList.add('visible');
   document.getElementById('generateBtn').disabled = false;
