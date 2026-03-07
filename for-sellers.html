@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Presetry for Sellers — プリセット販売者へ</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400&display=swap" rel="stylesheet">
+<script>
+  (function(d) {
+    var config = { kitId: 'upz2rzr', scriptTimeout: 3000, async: true },
+    h=d.documentElement,t=setTimeout(function(){h.className=h.className.replace(/\bwf-loading\b/g,"")+" wf-inactive";},config.scriptTimeout),tk=d.createElement("script"),f=false,s=d.getElementsByTagName("script")[0],a;h.className+=" wf-loading";tk.src='https://use.typekit.net/'+config.kitId+'.js';tk.async=true;tk.onload=tk.onreadystatechange=function(){a=this.readyState;if(f||a&&a!="complete"&&a!="loaded")return;f=true;clearTimeout(t);try{Typekit.load(config)}catch(e){}};s.parentNode.insertBefore(tk,s)
+  })(document);
+</script>
+<style>
+  :root {
+    --base:    #FCFCFC;
+    --accent:  #3E7E9A;
+    --mid:     #73A0B1;
+    --light1:  #BDCBCC;
+    --light2:  #98B6BE;
+    --ink:     #1e2c33;
+    --ink-dim: #4a6370;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: fot-tsukuardgothic-std, 'Noto Sans JP', sans-serif;
+    font-weight: 400;
+    background: var(--base);
+    color: var(--ink);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 100;
+    opacity: 0.5;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 100% 50% at 50% -5%, rgba(152,182,190,0.18) 0%, transparent 55%),
+      radial-gradient(ellipse 40% 30% at 90% 100%, rgba(189,203,204,0.12) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+
+  /* ── Header ── */
+  header {
+    padding: 52px 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border-bottom: 1px solid var(--light1);
+  }
+  .wordmark {
+    font-size: 13px;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+  }
+  .nav-links {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+  }
+  .nav-link {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--light2);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-link:hover { color: var(--accent); }
+
+  /* ── Hero ── */
+  .hero {
+    padding: 80px 0 72px;
+    border-bottom: 1px solid var(--light1);
+  }
+  .hero-eyebrow {
+    font-size: 10px;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 24px;
+  }
+  .hero-heading {
+    font-size: clamp(28px, 5vw, 42px);
+    font-weight: 400;
+    color: var(--ink-dim);
+    line-height: 1.55;
+    letter-spacing: 0.01em;
+    margin-bottom: 24px;
+    max-width: 580px;
+  }
+  .hero-heading em {
+    font-style: normal;
+    color: var(--accent);
+  }
+  .hero-body {
+    font-size: 14px;
+    color: var(--ink-dim);
+    line-height: 1.9;
+    max-width: 520px;
+    margin-bottom: 40px;
+  }
+  .hero-actions {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .btn-primary {
+    display: inline-block;
+    padding: 14px 32px;
+    background: var(--accent);
+    color: white;
+    text-decoration: none;
+    font-size: 12px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    border-radius: 3px;
+    transition: opacity 0.2s;
+  }
+  .btn-primary:hover { opacity: 0.85; }
+  .btn-secondary {
+    display: inline-block;
+    padding: 14px 32px;
+    border: 1px solid var(--light1);
+    color: var(--ink-dim);
+    text-decoration: none;
+    font-size: 12px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    border-radius: 3px;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .btn-secondary:hover { border-color: var(--mid); color: var(--accent); }
+
+  /* ── Section common ── */
+  .section {
+    padding: 72px 0;
+    border-bottom: 1px solid var(--light1);
+  }
+  .section-eyebrow {
+    font-size: 10px;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 20px;
+  }
+  .section-heading {
+    font-size: clamp(18px, 3vw, 24px);
+    font-weight: 400;
+    color: var(--ink-dim);
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+  .section-body {
+    font-size: 13px;
+    color: var(--ink-dim);
+    line-height: 1.9;
+    max-width: 560px;
+  }
+
+  /* ── Overview cards ── */
+  .overview-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--light1);
+    border: 1px solid var(--light1);
+    border-radius: 6px;
+    overflow: hidden;
+    margin-top: 40px;
+  }
+  .overview-card {
+    background: var(--base);
+    padding: 32px;
+  }
+  .overview-number {
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--light2);
+    margin-bottom: 16px;
+  }
+  .overview-title {
+    font-size: 15px;
+    color: var(--ink);
+    margin-bottom: 10px;
+    line-height: 1.5;
+  }
+  .overview-desc {
+    font-size: 12px;
+    color: var(--ink-dim);
+    line-height: 1.8;
+  }
+
+  /* ── Demo section ── */
+  .demo-frame {
+    margin-top: 40px;
+    border: 1px solid var(--light1);
+    border-radius: 6px;
+    overflow: hidden;
+    background: white;
+  }
+  .demo-frame-header {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--light1);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .demo-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--light1);
+  }
+  .demo-url {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--light2);
+    margin-left: 4px;
+  }
+  .demo-content {
+    padding: 40px 32px;
+    text-align: center;
+  }
+  .demo-content p {
+    font-size: 13px;
+    color: var(--ink-dim);
+    line-height: 1.8;
+    margin-bottom: 24px;
+  }
+
+  /* ── Flow ── */
+  .flow-steps {
+    margin-top: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .flow-step {
+    display: grid;
+    grid-template-columns: 48px 1fr;
+    gap: 24px;
+    padding: 28px 0;
+    border-bottom: 1px solid var(--light1);
+    align-items: start;
+  }
+  .flow-step:last-child { border-bottom: none; }
+  .flow-step-num {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--light2);
+    padding-top: 3px;
+  }
+  .flow-step-title {
+    font-size: 15px;
+    color: var(--ink);
+    margin-bottom: 8px;
+    line-height: 1.5;
+  }
+  .flow-step-desc {
+    font-size: 12px;
+    color: var(--ink-dim);
+    line-height: 1.8;
+  }
+
+  /* ── Pricing ── */
+  .pricing-wrap {
+    margin-top: 40px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .pricing-card {
+    border: 1px solid var(--light1);
+    border-radius: 6px;
+    padding: 32px;
+    background: white;
+    position: relative;
+  }
+  .pricing-card.featured {
+    border-color: var(--accent);
+  }
+  .pricing-badge {
+    position: absolute;
+    top: -1px;
+    left: 24px;
+    font-size: 9px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: white;
+    background: var(--accent);
+    padding: 4px 10px;
+    border-radius: 0 0 3px 3px;
+  }
+  .pricing-plan {
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 16px;
+  }
+  .pricing-price {
+    font-size: 32px;
+    color: var(--ink);
+    font-weight: 300;
+    letter-spacing: -0.01em;
+    margin-bottom: 4px;
+  }
+  .pricing-price span {
+    font-size: 13px;
+    color: var(--ink-dim);
+    font-weight: 400;
+  }
+  .pricing-desc {
+    font-size: 12px;
+    color: var(--ink-dim);
+    line-height: 1.7;
+    margin: 16px 0 24px;
+  }
+  .pricing-features {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .pricing-features li {
+    font-size: 12px;
+    color: var(--ink-dim);
+    line-height: 1.6;
+    padding-left: 16px;
+    position: relative;
+  }
+  .pricing-features li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--light2);
+  }
+  .pricing-note {
+    font-size: 11px;
+    color: var(--light2);
+    line-height: 1.7;
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid var(--light1);
+  }
+
+  /* ── FAQ ── */
+  .faq-list {
+    margin-top: 40px;
+    display: flex;
+    flex-direction: column;
+  }
+  .faq-item {
+    border-bottom: 1px solid var(--light1);
+    padding: 24px 0;
+    cursor: pointer;
+  }
+  .faq-question {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+  }
+  .faq-q-text {
+    font-size: 14px;
+    color: var(--ink);
+    line-height: 1.6;
+  }
+  .faq-icon {
+    font-size: 16px;
+    color: var(--light2);
+    flex-shrink: 0;
+    transition: transform 0.2s;
+  }
+  .faq-item.open .faq-icon { transform: rotate(45deg); }
+  .faq-answer {
+    display: none;
+    font-size: 13px;
+    color: var(--ink-dim);
+    line-height: 1.9;
+    margin-top: 16px;
+    padding-right: 32px;
+  }
+  .faq-item.open .faq-answer { display: block; }
+
+  /* ── CTA ── */
+  .cta-section {
+    padding: 80px 0 72px;
+    text-align: center;
+  }
+  .cta-heading {
+    font-size: clamp(20px, 3.5vw, 28px);
+    font-weight: 400;
+    color: var(--ink-dim);
+    line-height: 1.6;
+    margin-bottom: 32px;
+  }
+
+  /* ── Footer ── */
+  footer {
+    padding: 32px 0 48px;
+    border-top: 1px solid var(--light1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .footer-text {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--light1);
+  }
+  .footer-link {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--light2);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .footer-link:hover { color: var(--accent); }
+
+  @media (max-width: 600px) {
+    .wrap { padding: 0 20px; }
+    header { padding: 32px 0 16px; flex-direction: column; gap: 16px; }
+    .hero { padding: 52px 0 48px; }
+    .hero-actions { flex-direction: column; align-items: flex-start; }
+    .btn-primary, .btn-secondary { width: 100%; text-align: center; }
+    .overview-grid { grid-template-columns: 1fr; }
+    .pricing-wrap { grid-template-columns: 1fr; }
+    .section { padding: 52px 0; }
+    footer { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- Header -->
+  <header>
+    <span class="wordmark">Presetry</span>
+    <nav class="nav-links">
+      <a class="nav-link" href="./index.html">デモを見る</a>
+      <a class="nav-link" href="./generator.html">ページを作る</a>
+    </nav>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <p class="hero-eyebrow">For Preset Sellers</p>
+    <h1 class="hero-heading">あなたのプリセットに、<br><em>試着室</em>を。</h1>
+    <p class="hero-body">
+      Presetryは、プリセット販売者のためのブラウザ試着ツールです。<br>
+      Before / After 画像をアップロードするだけで、購入者が自分の写真でプリセットを試せる専用ページが生成されます。
+    </p>
+    <div class="hero-actions">
+      <a class="btn-primary" href="./generator.html">無料で試す</a>
+      <a class="btn-secondary" href="./index.html">デモを体験する</a>
+    </div>
+  </section>
+
+  <!-- Overview -->
+  <section class="section">
+    <p class="section-eyebrow">What is Presetry</p>
+    <h2 class="section-heading">「買って後悔」をなくす、<br>新しいプリセット体験。</h2>
+    <p class="section-body">
+      プリセットは雰囲気で選ばれます。でも「自分の写真に合うかどうか」は買ってみないとわからない——そのギャップが購入の壁になっています。Presetryはその壁を取り除きます。
+    </p>
+    <div class="overview-grid">
+      <div class="overview-card">
+        <p class="overview-number">01</p>
+        <p class="overview-title">自分の写真で試せる</p>
+        <p class="overview-desc">購入者がどんな写真でも自分でアップロードして、プリセットの雰囲気をその場で確認できます。</p>
+      </div>
+      <div class="overview-card">
+        <p class="overview-number">02</p>
+        <p class="overview-title">5分で専用ページが完成</p>
+        <p class="overview-desc">Before / After 画像をアップロードするだけ。コードの知識は一切不要です。</p>
+      </div>
+      <div class="overview-card">
+        <p class="overview-number">03</p>
+        <p class="overview-title">スマホ写真でも動く</p>
+        <p class="overview-desc">一眼カメラでなくても、iPhoneで撮った写真でもプリセットの効果が確認できます。</p>
+      </div>
+      <div class="overview-card">
+        <p class="overview-number">04</p>
+        <p class="overview-title">購入導線もそのまま</p>
+        <p class="overview-desc">試着ページ内に購入リンクを設置できるので、試してそのまま購入という流れが作れます。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Demo -->
+  <section class="section">
+    <p class="section-eyebrow">Demo</p>
+    <h2 class="section-heading">実際の試着体験を<br>確認してみてください。</h2>
+    <p class="section-body">
+      下のリンクからPresetryの試着体験を実際に確認できます。自分の写真をアップロードして、プリセットがどう機能するかを体験してみてください。
+    </p>
+    <div class="demo-frame">
+      <div class="demo-frame-header">
+        <div class="demo-dot"></div>
+        <div class="demo-dot"></div>
+        <div class="demo-dot"></div>
+        <span class="demo-url">pic-kn.github.io/presetry</span>
+      </div>
+      <div class="demo-content">
+        <p>Ephemeral Blue のデモページで、実際の試着体験を確認できます。<br>自分の写真をアップロードして、プリセットの雰囲気を体験してください。</p>
+        <a class="btn-primary" href="./index.html" target="_blank">デモを体験する →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Flow -->
+  <section class="section">
+    <p class="section-eyebrow">How it works</p>
+    <h2 class="section-heading">導入の流れ</h2>
+    <div class="flow-steps">
+      <div class="flow-step">
+        <span class="flow-step-num">Step 01</span>
+        <div>
+          <p class="flow-step-title">Generatorを開く</p>
+          <p class="flow-step-desc">Presetry Generatorにアクセスします。アカウント登録不要、ブラウザだけで動きます。</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <span class="flow-step-num">Step 02</span>
+        <div>
+          <p class="flow-step-title">プリセット情報を入力する</p>
+          <p class="flow-step-desc">プリセット名・販売者名・購入リンクを入力します。Google Analytics IDも設定できます。</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <span class="flow-step-num">Step 03</span>
+        <div>
+          <p class="flow-step-title">Before / After 画像をアップロード</p>
+          <p class="flow-step-desc">同じシーンのBefore・After画像を3〜5ペアアップロードします。ペアが多いほど精度が上がります。</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <span class="flow-step-num">Step 04</span>
+        <div>
+          <p class="flow-step-title">HTMLをダウンロードして公開</p>
+          <p class="flow-step-desc">生成されたHTMLファイルをGitHub Pagesなどにアップロードするだけで、専用URLが発行されます。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing -->
+  <section class="section">
+    <p class="section-eyebrow">Pricing</p>
+    <h2 class="section-heading">料金プラン</h2>
+    <p class="section-body">現在はベータ版として無料で提供しています。正式リリース後は月額プランを予定しています。</p>
+    <div class="pricing-wrap">
+      <div class="pricing-card featured">
+        <div class="pricing-badge">現在提供中</div>
+        <p class="pricing-plan">Beta</p>
+        <p class="pricing-price">¥0 <span>/ 月</span></p>
+        <p class="pricing-desc">ベータ期間中は全機能を無料でご利用いただけます。</p>
+        <ul class="pricing-features">
+          <li>専用試着ページの生成</li>
+          <li>Before / After 複数ペア対応</li>
+          <li>Google Analytics 連携</li>
+          <li>購入リンクの設置</li>
+        </ul>
+      </div>
+      <div class="pricing-card">
+        <p class="pricing-plan">Standard</p>
+        <p class="pricing-price">¥500 <span>/ 月</span></p>
+        <p class="pricing-desc">正式リリース後に提供予定のプランです。</p>
+        <ul class="pricing-features">
+          <li>Betaプランの全機能</li>
+          <li>専用URLの維持・管理</li>
+          <li>複数プリセット対応（予定）</li>
+          <li>解約時は非公開に</li>
+        </ul>
+        <p class="pricing-note">※ 正式リリース時期は未定です。ベータ期間中にフィードバックをお寄せください。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section">
+    <p class="section-eyebrow">FAQ</p>
+    <h2 class="section-heading">よくある質問</h2>
+    <div class="faq-list">
+      <div class="faq-item">
+        <div class="faq-question">
+          <span class="faq-q-text">コードの知識がなくても使えますか？</span>
+          <span class="faq-icon">+</span>
+        </div>
+        <p class="faq-answer">はい、不要です。Generatorにフォームで情報を入力して、Before/After画像をアップロードするだけでHTMLが自動生成されます。生成されたファイルをGitHub Pagesにアップロードする手順だけ必要ですが、これも数分で完了します。</p>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">
+          <span class="faq-q-text">画像データは外部に送信されますか？</span>
+          <span class="faq-icon">+</span>
+        </div>
+        <p class="faq-answer">送信されません。全ての処理はブラウザ内で完結しています。アップロードした画像がサーバーに送られることはなく、プリセットのデータが外部に漏れる心配はありません。</p>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">
+          <span class="faq-q-text">どのくらいの精度でプリセットが再現されますか？</span>
+          <span class="faq-icon">+</span>
+        </div>
+        <p class="faq-answer">Before/Afterのピクセルを直接比較してLUTを生成するため、3〜5ペアあれば十分な精度が得られます。ただしLightroomの全パラメータを完全再現するものではなく、あくまでブラウザ上でのシミュレーションです。購入者にも免責事項として明記されます。</p>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">
+          <span class="faq-q-text">どのプリセット販売プラットフォームでも使えますか？</span>
+          <span class="faq-icon">+</span>
+        </div>
+        <p class="faq-answer">はい。Gumroad、CURBON、noteなど販売プラットフォームを問わず使えます。生成された専用URLを販売ページやSNSのプロフィールに貼るだけです。</p>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">
+          <span class="faq-q-text">RAWファイルのBefore/After画像は使えますか？</span>
+          <span class="faq-icon">+</span>
+        </div>
+        <p class="faq-answer">Generatorへのアップロードには JPG / PNG / WEBP 形式の画像をご使用ください。LightroomでRAWを現像した後、JPGで書き出した画像をご用意ください。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <h2 class="cta-heading">まず、試してみてください。</h2>
+    <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
+      <a class="btn-primary" href="./generator.html">ページを生成する</a>
+      <a class="btn-secondary" href="./index.html">デモを体験する</a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <span class="footer-text">presetry — preset trial experience</span>
+    <a class="footer-link" href="https://twitter.com/pic_kn__" target="_blank" rel="noopener">@pic_kn__</a>
+  </footer>
+
+</div>
+
+<script>
+  // FAQ accordion
+  document.querySelectorAll('.faq-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    });
+  });
+</script>
+</body>
+</html>
