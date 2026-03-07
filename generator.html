@@ -498,7 +498,7 @@ function computeLUTFromPairs(validPairs) {
     const ad = pair.after.data;
     const len = Math.min(bd.length, ad.length);
 
-    for (let i = 0; i < len; i += 4) {
+    for (let i = 0; i < len; i += 16) { // 4ピクセルおきにサンプリング
       const br = bd[i], bg = bd[i+1], bb = bd[i+2];
       const ar = ad[i], ag = ad[i+1], ab = ad[i+2];
 
@@ -572,15 +572,24 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
 
   await new Promise(r => setTimeout(r, 50)); // let UI update
 
-  const curves = computeLUTFromPairs(validPairs);
-  progressBar.style.width = '70%';
-  progressLabel.textContent = 'ページを生成中...';
+  let curves;
+  const genTimeout = setTimeout(() => {
+    progressLabel.textContent = '処理に時間がかかっています。画像サイズを小さくしてお試しください。';
+    progressBar.style.width = '0%';
+    document.getElementById('generateBtn').disabled = false;
+  }, 30000); // 30秒タイムアウト
 
-  await new Promise(r => setTimeout(r, 50));
+  try {
+    curves = computeLUTFromPairs(validPairs);
+    progressBar.style.width = '70%';
+    progressLabel.textContent = 'ページを生成中...';
 
-  const html = generateHTML({ presetName, sellerName, purchaseUrl, presetDesc, gaId, curves, pairCount: validPairs.length });
-  progressBar.style.width = '100%';
-  progressLabel.textContent = '完了';
+    await new Promise(r => setTimeout(r, 50));
+
+    const html = generateHTML({ presetName, sellerName, purchaseUrl, presetDesc, gaId, curves, pairCount: validPairs.length });
+    clearTimeout(genTimeout);
+    progressBar.style.width = '100%';
+    progressLabel.textContent = '完了';
 
   // Create download
   const blob = new Blob([html], { type: 'text/html' });
@@ -606,12 +615,19 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
     status.textContent = '公開中...';
     urlEl.textContent = '';
 
+    const controller = new AbortController();
+    const timeout = setTimeout(() => {
+      controller.abort();
+    }, 20000); // 20秒タイムアウト
+
     try {
       const res = await fetch('https://presetry-push.pickn-photograph001.workers.dev', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username: userSlug, presetSlug, html }),
+        signal: controller.signal,
       });
+      clearTimeout(timeout);
       const data = await res.json();
       if (data.success) {
         status.textContent = '公開完了！';
@@ -621,13 +637,24 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
         publishBtn.disabled = false;
       }
     } catch (e) {
-      status.textContent = 'ネットワークエラーが発生しました';
+      clearTimeout(timeout);
+      if (e.name === 'AbortError') {
+        status.textContent = 'タイムアウトしました。時間をおいて再度お試しください。';
+      } else {
+        status.textContent = 'ネットワークエラーが発生しました';
+      }
       publishBtn.disabled = false;
     }
   };
 
-  document.getElementById('resultEl').classList.add('visible');
-  document.getElementById('generateBtn').disabled = false;
+    document.getElementById('resultEl').classList.add('visible');
+    document.getElementById('generateBtn').disabled = false;
+  } catch (e) {
+    clearTimeout(genTimeout);
+    progressLabel.textContent = 'エラーが発生しました。再度お試しください。';
+    progressBar.style.width = '0%';
+    document.getElementById('generateBtn').disabled = false;
+  }
 });
 
 // ── HTML template generator ──
