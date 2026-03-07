@@ -349,9 +349,11 @@ function checkPw() {
     <p class="section-label">01 — Preset Info</p>
     <div style="display:flex;flex-direction:column;gap:10px;">
       <div class="input-row">
+        <input type="text" id="username" placeholder="ユーザー名（例：keiju）">
+        <p style="font-size:11px;color:var(--mid);line-height:1.7;margin-top:6px;letter-spacing:0.05em;">※ ユーザー名はURLに使用されます（sellers/<span id="usernamePreview">username</span>/...）。変更するとURLが変わるためご注意ください。</p>
         <input type="text" id="presetName" placeholder="プリセット名（例：Ephemeral Blue）">
-        <p style="font-size:11px;color:var(--mid);line-height:1.7;margin-top:6px;letter-spacing:0.05em;">※ プリセット名はページのURLに使用されます。入力後の変更はURLが変わるためご注意ください。</p>
-        <input type="text" id="sellerName" placeholder="販売者名 / アカウント名">
+        <p style="font-size:11px;color:var(--mid);line-height:1.7;margin-top:6px;letter-spacing:0.05em;">※ プリセット名もURLに使用されます。入力後の変更はURLが変わるためご注意ください。</p>
+        <input type="text" id="sellerName" placeholder="販売者名 / アカウント名（表示名）">
       </div>
       <input type="text" id="purchaseUrl" placeholder="購入リンク URL（例：https://gumroad.com/...）">
       <textarea id="presetDesc" placeholder="プリセットの説明（省略可）"></textarea>
@@ -535,13 +537,20 @@ function computeLUTFromPairs(validPairs) {
 }
 
 // ── Generate page ──
+document.getElementById('username').addEventListener('input', function() {
+  const slug = this.value.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+  document.getElementById('usernamePreview').textContent = slug || 'username';
+});
+
 document.getElementById('generateBtn').addEventListener('click', async () => {
+  const username    = document.getElementById('username').value.trim();
   const presetName  = document.getElementById('presetName').value.trim();
   const sellerName  = document.getElementById('sellerName').value.trim();
   const purchaseUrl = document.getElementById('purchaseUrl').value.trim();
   const presetDesc  = document.getElementById('presetDesc').value.trim();
   const gaId        = document.getElementById('gaId').value.trim();
 
+  if (!username)   { alert('ユーザー名を入力してください'); return; }
   if (!presetName) { alert('プリセット名を入力してください'); return; }
 
   const validPairs = pairs.filter(p => p.before && p.after);
@@ -573,15 +582,17 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
   // Create download
   const blob = new Blob([html], { type: 'text/html' });
   const url = URL.createObjectURL(blob);
-  const slug = presetName.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
-  const filename = `presetry-${slug}.html`;
+  const userSlug   = username.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+  const presetSlug = presetName.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+  const filename = `${presetSlug}.html`;
+  const uploadPath = `sellers/${userSlug}/${presetSlug}.html`;
 
   const downloadBtn = document.getElementById('downloadBtn');
   downloadBtn.href = url;
   downloadBtn.download = filename;
 
   document.getElementById('resultDesc').textContent =
-    `「${presetName}」の試着ページが生成されました。HTMLファイルをダウンロードして GitHub Pages にアップロードしてください。`;
+    `「${presetName}」の試着ページが生成されました。ダウンロードしたHTMLファイルを GitHub Pages の ${uploadPath} にアップロードしてください。`;
 
   document.getElementById('resultEl').classList.add('visible');
   document.getElementById('generateBtn').disabled = false;
