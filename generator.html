@@ -4,6 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Presetry Generator</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400&display=swap" rel="stylesheet">
+<script>
+  (function(d) {
+    var config = { kitId: 'upz2rzr', scriptTimeout: 3000, async: true },
+    h=d.documentElement,t=setTimeout(function(){h.className=h.className.replace(/\bwf-loading\b/g,"")+" wf-inactive";},config.scriptTimeout),tk=d.createElement("script"),f=false,s=d.getElementsByTagName("script")[0],a;h.className+=" wf-loading";tk.src='https://use.typekit.net/'+config.kitId+'.js';tk.async=true;tk.onload=tk.onreadystatechange=function(){a=this.readyState;if(f||a&&a!="complete"&&a!="loaded")return;f=true;clearTimeout(t);try{Typekit.load(config)}catch(e){}};s.parentNode.insertBefore(tk,s)
+  })(document);
+</script>
 <style>
   :root {
     --base:    #FCFCFC;
@@ -15,7 +22,7 @@
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
-    font-family: -apple-system, 'Noto Sans JP', sans-serif;
+    font-family: fot-tsukuardgothic-std, 'Noto Sans JP', sans-serif;
     background: var(--base);
     color: var(--ink);
     min-height: 100vh;
@@ -296,6 +303,42 @@
 </style>
 </head>
 <body>
+
+<!-- Password Gate -->
+<div id="passwordGate" style="
+  position:fixed; inset:0; background:var(--base);
+  display:flex; align-items:center; justify-content:center;
+  z-index:9999;
+">
+  <div style="text-align:center; max-width:320px; padding:0 32px;">
+    <p style="font-size:11px;letter-spacing:0.4em;text-transform:uppercase;color:var(--ink-dim);margin-bottom:24px;">Presetry Generator</p>
+    <p style="font-size:13px;color:var(--ink-dim);margin-bottom:24px;line-height:1.8;">ベータ版のためアクセスコードが必要です</p>
+    <input id="pwInput" type="password" placeholder="Access Code"
+      style="width:100%;padding:12px 16px;border:1px solid var(--light1);border-radius:3px;font-size:14px;background:var(--base);color:var(--ink);outline:none;text-align:center;letter-spacing:0.2em;"
+      onkeydown="if(event.key==='Enter')checkPw()">
+    <p id="pwError" style="font-size:11px;color:#c0392b;margin-top:12px;min-height:16px;letter-spacing:0.05em;"></p>
+    <button onclick="checkPw()" style="
+      margin-top:8px;width:100%;padding:12px;
+      background:var(--accent);color:white;border:none;
+      border-radius:3px;font-size:12px;letter-spacing:0.25em;
+      text-transform:uppercase;cursor:pointer;
+    ">Enter</button>
+  </div>
+</div>
+
+<script>
+function checkPw() {
+  const val = document.getElementById('pwInput').value;
+  if (val === 'presetry-beta') {
+    document.getElementById('passwordGate').style.display = 'none';
+  } else {
+    document.getElementById('pwError').textContent = 'アクセスコードが正しくありません';
+    document.getElementById('pwInput').value = '';
+    document.getElementById('pwInput').focus();
+  }
+}
+</script>
+
 <div class="wrap">
   <p class="logo">Presetry</p>
   <h1>Generator</h1>
@@ -307,6 +350,7 @@
     <div style="display:flex;flex-direction:column;gap:10px;">
       <div class="input-row">
         <input type="text" id="presetName" placeholder="プリセット名（例：Ephemeral Blue）">
+        <p style="font-size:11px;color:var(--mid);line-height:1.7;margin-top:6px;letter-spacing:0.05em;">※ プリセット名はページのURLに使用されます。入力後の変更はURLが変わるためご注意ください。</p>
         <input type="text" id="sellerName" placeholder="販売者名 / アカウント名">
       </div>
       <input type="text" id="purchaseUrl" placeholder="購入リンク URL（例：https://gumroad.com/...）">
