@@ -672,8 +672,7 @@ function generateHTML({ presetName, sellerName, purchaseUrl, presetDesc, gaId, c
   const purchaseSection = purchaseUrl ? `
   <div class="cta-section">
     <div>
-      <span class="cta-preset-name">${presetName}</span>
-      <p class="cta-meta">${sellerName ? sellerName + '<br>' : ''}Lightroom Classic &nbsp;/&nbsp; .xmp</p>
+      <p class="cta-meta">${presetDesc ? presetDesc + '<br>' : ''}${sellerName ? sellerName + '<br>' : ''}Lightroom Classic &nbsp;/&nbsp; .xmp</p>
     </div>
     <div>
       <a href="${purchaseUrl}" target="_blank" rel="noopener" class="cta-btn">
