@@ -769,6 +769,32 @@ ${gaScript}
     color: var(--mid);
     margin-bottom: 28px;
   }
+  .hero-desc {
+    font-size: 12px;
+    color: var(--ink-dim);
+    letter-spacing: 0.10em;
+    line-height: 2.2;
+    max-width: 340px;
+    font-weight: 300;
+  }
+  .rule {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .rule-line {
+    flex: 1;
+    height: 1px;
+    background: var(--light1);
+  }
+  .rule-text {
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--light2);
+    white-space: nowrap;
+  }
   .upload-zone {
     border: 1px dashed var(--light1);
     border-radius: 6px;
@@ -974,17 +1000,23 @@ ${gaScript}
 <div class="wrap">
   <header>
     <span class="wordmark">Presetry</span>
-    <span class="tagline">preset trial experience</span>
+    <span class="tagline">Preset Trial</span>
   </header>
 
   <section class="hero">
-    <div class="preset-chip">Now — ${presetName}${sellerTag}</div>
+    <span class="preset-chip">Now playing — ${presetName}${sellerTag}</span>
     <h1 class="hero-heading">あなたの写真で、<br>試してみてください。</h1>
+    <p class="hero-desc">写真をアップロードして、<br>このプリセットの世界観を体感してください。</p>
     ${descSection}
   </section>
 
+  <div class="rule">
+    <div class="rule-line"></div>
+    <span class="rule-text">Upload your photo</span>
+    <div class="rule-line"></div>
+  </div>
+
   <section class="upload-section">
-    <p class="section-heading">Upload Your Photo</p>
     <div class="upload-zone" id="uploadZone">
       <div class="upload-zone-icon">↑</div>
       <p class="upload-zone-text">写真をドラッグ＆ドロップ<br>またはタップして選択</p>
