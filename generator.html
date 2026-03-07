@@ -480,6 +480,7 @@ function updatePairStatus(id) {
 }
 
 document.getElementById('addPairBtn').addEventListener('click', addPair);
+addPair(); // 初期表示
 
 // ── LUT calculation ──
 function computeLUTFromPairs(validPairs) {
@@ -659,14 +660,13 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
 
 // ── HTML template generator ──
 function generateHTML({ presetName, sellerName, purchaseUrl, presetDesc, gaId, curves, pairCount }) {
-  const gaScript = gaId ? `\
-<!-- Google tag (gtag.js) -->\
-<script async src="https://www.googletagmanager.com/gtag/js?id=${gaId}"><\/script>\
-<script>\
-  window.dataLayer = window.dataLayer || [];\
-  function gtag(){dataLayer.push(arguments);}\
-  gtag('js', new Date());\
-  gtag('config', '${gaId}');\
+  const gaScript = gaId ? `<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=${gaId}"><\/script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', '${gaId}');
 <\/script>` : '';
 
   const purchaseSection = purchaseUrl ? `
@@ -705,7 +705,7 @@ ${gaScript}
     },
     h=d.documentElement,t=setTimeout(function(){h.className=h.className.replace(/\\bwf-loading\\b/g,"")+" wf-inactive";},config.scriptTimeout),tk=d.createElement("script"),f=false,s=d.getElementsByTagName("script")[0],a;h.className+=" wf-loading";tk.src='https://use.typekit.net/'+config.kitId+'.js';tk.async=true;tk.onload=tk.onreadystatechange=function(){a=this.readyState;if(f||a&&a!="complete"&&a!="loaded")return;f=true;clearTimeout(t);try{Typekit.load(config)}catch(e){}};s.parentNode.insertBefore(tk,s)
   })(document);
-</script>
+<\/script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400&display=swap');
   :root {
@@ -1255,7 +1255,7 @@ ${gaScript}
     <p class="disclaimer">※ これはブラウザ上でのシミュレーションです。実際のLightroom処理とは色・階調が異なります。</p>
   </div>
 
-  ${purchaseSection}
+${purchaseSection}
 
   <footer>
     <p>presetry — preset trial experience</p>
@@ -1265,12 +1265,8 @@ ${gaScript}
 </div>
 
 <script>
-  // LUT curves (auto-generated from ${pairCount} Before/After pairs)
-  const curves = {
-    red:   ${redCurve},
-    green: ${greenCurve},
-    blue:  ${blueCurve},
-  };
+  // LUT curves (auto-generated)
+  const curves = { red: ${redCurve}, green: ${greenCurve}, blue: ${blueCurve} };
 
   // Build LUT from curve control points using linear interpolation
   function buildLUT(points) {
@@ -1408,8 +1404,8 @@ ${gaScript}
       g = g + (greenLUT[g] - g) * f;
       b = b + (blueLUT[b]  - b) * f;
 
-      // 2. Film grain (disabled for LUT-only pages)
-      // 3. Film grain
+      // 2. (HSL panel disabled for LUT-only pages)
+      // 3. Film grain (disabled)
       const noise = (Math.random() - 0.5) * 0;
       data[i]   = Math.max(0, Math.min(255, r + noise));
       data[i+1] = Math.max(0, Math.min(255, g + noise));
@@ -1475,8 +1471,13 @@ ${gaScript}
     fileInput.value = '';
     fileInput.click();
   });
-</script>
+<\/script>
 </body>
 </html>
 `;
 }
+
+
+</script>
+</body>
+</html>
