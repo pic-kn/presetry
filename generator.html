@@ -643,10 +643,18 @@ function generateHTML({ presetName, sellerName, purchaseUrl, presetDesc, gaId, c
 <\/script>` : '';
 
   const purchaseSection = purchaseUrl ? `
-    <div class="cta-section">
-      <p class="cta-label">気に入ったら</p>
-      <a class="cta-btn" href="${purchaseUrl}" target="_blank" rel="noopener">購入する</a>
-    </div>` : '';
+  <div class="cta-section">
+    <div>
+      ${descSection ? `<span class="cta-preset-name">${presetName}</span>` : `<span class="cta-preset-name">${presetName}</span>`}
+      <p class="cta-meta">${sellerName ? sellerName + '<br>' : ''}Lightroom Classic &nbsp;/&nbsp; .xmp</p>
+    </div>
+    <div>
+      <a href="${purchaseUrl}" target="_blank" rel="noopener" class="cta-btn">
+        購入する
+        <span class="cta-price">${presetName}</span>
+      </a>
+    </div>
+  </div>` : '';
 
   const descSection = presetDesc ? `<p class="preset-desc">${presetDesc}</p>` : '';
   const sellerTag = sellerName ? ` by ${sellerName}` : '';
@@ -666,6 +674,7 @@ ${gaScript}
   })(document);
 <\/script>
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400&display=swap');
   :root {
     --base:    #FCFCFC;
     --accent:  #3E7E9A;
@@ -675,8 +684,11 @@ ${gaScript}
     --ink:     #1e2c33;
     --ink-dim: #4a6370;
   }
+
   * { margin: 0; padding: 0; box-sizing: border-box; }
+
   html { scroll-behavior: smooth; }
+
   body {
     font-family: fot-tsukuardgothic-std, 'Noto Sans JP', sans-serif;
     font-weight: 400;
@@ -685,6 +697,8 @@ ${gaScript}
     min-height: 100vh;
     overflow-x: hidden;
   }
+
+  /* Subtle noise texture overlay */
   body::after {
     content: '';
     position: fixed;
@@ -694,6 +708,8 @@ ${gaScript}
     z-index: 100;
     opacity: 0.5;
   }
+
+  /* Atmospheric gradient */
   body::before {
     content: '';
     position: fixed;
@@ -704,6 +720,7 @@ ${gaScript}
     pointer-events: none;
     z-index: 0;
   }
+
   .wrap {
     position: relative;
     z-index: 1;
@@ -711,64 +728,64 @@ ${gaScript}
     margin: 0 auto;
     padding: 0 32px;
   }
+
+  /* ── Header ── */
   header {
-    padding: 52px 0 20px;
+    padding: 52px 0 0;
     display: flex;
     justify-content: space-between;
     align-items: baseline;
     border-bottom: 1px solid var(--light1);
+    padding-bottom: 20px;
   }
+
   .wordmark {
+    font-family: fot-tsukuardgothic-std, 'Noto Sans JP', sans-serif;
     font-size: 13px;
     letter-spacing: 0.35em;
     text-transform: uppercase;
     color: var(--ink-dim);
+    font-weight: 400;
   }
-  .tagline {
-    font-size: 11px;
-    letter-spacing: 0.18em;
-    color: var(--light2);
-    text-transform: uppercase;
-  }
-  .hero {
-    padding: 52px 0 40px;
-    border-bottom: 1px solid var(--light1);
-  }
-  .preset-chip {
-    display: inline-block;
+
+  .tag {
     font-size: 10px;
     letter-spacing: 0.25em;
     text-transform: uppercase;
-    color: var(--mid);
-    border: 1px solid var(--light1);
-    padding: 4px 10px;
-    border-radius: 2px;
+    color: var(--light2);
+    font-family: fot-tsukuardgothic-std, 'Noto Sans JP', sans-serif;
+  }
+
+  /* ── Hero ── */
+  .hero {
+    padding: 72px 0 64px;
+    opacity: 0;
+    animation: rise 1.2s cubic-bezier(0.16,1,0.3,1) 0.1s forwards;
+  }
+
+  .hero-en {
+    font-family: fot-tsukuardgothic-std, 'Noto Sans JP', sans-serif;
+    font-size: clamp(28px, 5.5vw, 52px);
+    font-weight: 400;
+    line-height: 1.4;
+    letter-spacing: 0.05em;
+    color: var(--ink-dim);
+    display: block;
     margin-bottom: 20px;
   }
-  .hero-heading {
-    font-size: clamp(22px, 4vw, 32px);
-    font-weight: 400;
-    color: var(--ink-dim);
-    line-height: 1.6;
-    letter-spacing: 0.02em;
-    margin-bottom: 12px;
-  }
-  .preset-desc {
-    font-size: 13px;
-    color: var(--ink-dim);
-    line-height: 1.8;
-    margin-top: 8px;
-  }
-  .upload-section {
-    padding: 48px 0 32px;
-  }
-  .section-heading {
-    font-size: 11px;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    color: var(--mid);
+
+  .preset-chip {
+    display: inline-block;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    border: 1px solid rgba(62,126,154,0.3);
+    padding: 5px 12px;
     margin-bottom: 28px;
+    font-family: fot-tsukuardgothic-std, 'Noto Sans JP', sans-serif;
   }
+
+
   .hero-desc {
     font-size: 12px;
     color: var(--ink-dim);
@@ -777,222 +794,368 @@ ${gaScript}
     max-width: 340px;
     font-weight: 300;
   }
+
+  /* ── Rule ── */
   .rule {
     display: flex;
     align-items: center;
     gap: 16px;
     margin-bottom: 32px;
+    opacity: 0;
+    animation: rise 1s cubic-bezier(0.16,1,0.3,1) 0.25s forwards;
   }
+
   .rule-line {
     flex: 1;
     height: 1px;
     background: var(--light1);
   }
+
   .rule-text {
     font-size: 9px;
     letter-spacing: 0.3em;
     text-transform: uppercase;
     color: var(--light2);
+    font-family: fot-tsukuardgothic-std, 'Noto Sans JP', sans-serif;
     white-space: nowrap;
   }
+
+  /* ── Upload ── */
   .upload-zone {
-    border: 1px dashed var(--light1);
-    border-radius: 6px;
-    padding: 48px 32px;
+    border: 1px solid var(--light1);
+    padding: 60px 24px;
     text-align: center;
     cursor: pointer;
-    transition: border-color 0.2s;
+    transition: border-color 0.4s ease, background 0.4s ease;
+    background: rgba(152,182,190,0.04);
     position: relative;
+    overflow: hidden;
+    margin-bottom: 56px;
+    opacity: 0;
+    animation: rise 1s cubic-bezier(0.16,1,0.3,1) 0.35s forwards;
   }
-  .upload-zone:hover, .upload-zone.drag-over { border-color: var(--mid); }
-  .upload-zone-icon {
-    font-size: 24px;
-    margin-bottom: 12px;
-    opacity: 0.4;
+
+  .upload-zone:hover,
+  .upload-zone.drag-over {
+    border-color: var(--light2);
+    background: rgba(62,126,154,0.04);
   }
-  .upload-zone-text {
-    font-size: 13px;
-    color: var(--ink-dim);
-    line-height: 1.7;
+
+  .upload-zone input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
   }
-  .upload-zone-sub {
-    font-size: 11px;
+
+  .upload-icon {
+    margin: 0 auto 20px;
+    width: 36px;
+    height: 36px;
     color: var(--light2);
-    margin-top: 6px;
-    letter-spacing: 0.1em;
+    opacity: 0.6;
   }
-  #fileInput { display: none; }
-  .viewer { display: none; padding: 32px 0; }
-  .viewer.visible { display: block; }
-  .viewer-header {
+
+  .upload-main {
+    font-family: fot-tsukuardgothic-std, 'Noto Sans JP', sans-serif;
+    font-size: 14px;
+    letter-spacing: 0.3em;
+    color: var(--ink-dim);
+    display: block;
+    margin-bottom: 10px;
+  }
+
+  .upload-sub {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--light2);
+    text-transform: uppercase;
+    font-family: fot-tsukuardgothic-std, 'Noto Sans JP', sans-serif;
+  }
+
+  .upload-note {
+    display: block;
+    margin-top: 16px;
+    font-size: 10px;
+    color: rgba(115,160,177,0.6);
+    letter-spacing: 0.08em;
+    line-height: 1.9;
+  }
+
+  /* ── Viewer ── */
+  .viewer { display: none; margin-bottom: 56px; }
+  .viewer.active { display: block; }
+
+  .viewer-head {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 14px;
   }
-  .viewer-label {
-    font-size: 11px;
-    letter-spacing: 0.25em;
+
+  .viewer-head-label {
+    font-size: 9px;
+    letter-spacing: 0.3em;
     text-transform: uppercase;
-    color: var(--mid);
+    color: var(--light2);
+    font-family: fot-tsukuardgothic-std, 'Noto Sans JP', sans-serif;
   }
+
   .reset-btn {
-    font-size: 11px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--mid);
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: var(--light2);
     background: none;
     border: none;
     cursor: pointer;
+    font-family: fot-tsukuardgothic-std, 'Noto Sans JP', sans-serif;
+    text-transform: uppercase;
     text-decoration: underline;
     text-underline-offset: 3px;
-    padding: 0;
-    transition: color 0.2s;
+    transition: color 0.3s;
   }
+
   .reset-btn:hover { color: var(--accent); }
+
   .comparison-wrap {
     position: relative;
-    width: 100%;
-    aspect-ratio: 3/2;
     overflow: hidden;
-    border-radius: 4px;
-    cursor: col-resize;
     user-select: none;
+    cursor: ew-resize;
+    aspect-ratio: 3/2;
     background: var(--light1);
   }
+
   .comparison-wrap img {
     position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
+    inset: 0;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
     display: block;
   }
-  #imgAfter {
-    clip-path: inset(0 0 0 50%);
-  }
+
+  .img-after { clip-path: inset(0 50% 0 0); }
+
   .slider-line {
     position: absolute;
     top: 0; bottom: 0;
     left: 50%;
     width: 1px;
-    background: rgba(255,255,255,0.7);
+    background: rgba(252,252,252,0.7);
+    transform: translateX(-50%);
     pointer-events: none;
   }
+
   .slider-handle {
     position: absolute;
-    top: 50%;
-    left: 50%;
+    top: 50%; left: 50%;
     transform: translate(-50%, -50%);
-    width: 44px; height: 44px;
-    background: rgba(255,255,255,0.15);
-    backdrop-filter: blur(4px);
-    border: 1px solid rgba(255,255,255,0.4);
-    border-radius: 3px;
+    width: 32px; height: 32px;
+    border: 1px solid rgba(252,252,252,0.6);
+    background: rgba(62,126,154,0.6);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: white;
-    font-size: 11px;
-    letter-spacing: 0.05em;
+    pointer-events: none;
+    backdrop-filter: blur(4px);
+  }
+
+  .slider-handle svg {
+    width: 12px; height: 12px;
+    color: var(--base);
+  }
+
+  .label-before,
+  .label-after {
+    position: absolute;
+    bottom: 14px;
+    font-size: 8px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    font-family: fot-tsukuardgothic-std, 'Noto Sans JP', sans-serif;
+    color: rgba(252,252,252,0.6);
     pointer-events: none;
   }
-  .img-labels {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 10px;
-  }
-  .img-label {
-    font-size: 10px;
+
+  .label-before { left: 14px; }
+  .label-after  { right: 14px; }
+
+  #processingCanvas { display: none; }
+
+  /* ── Controls ── */
+  .controls { margin-top: 20px; }
+
+  .control-group label {
+    display: block;
+    font-size: 9px;
     letter-spacing: 0.25em;
     text-transform: uppercase;
     color: var(--light2);
+    font-family: fot-tsukuardgothic-std, 'Noto Sans JP', sans-serif;
+    margin-bottom: 10px;
   }
-  .intensity-section {
-    margin-top: 28px;
-    padding-top: 24px;
-    border-top: 1px solid var(--light1);
-  }
-  .intensity-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    margin-bottom: 12px;
-  }
-  .intensity-label {
-    font-size: 11px;
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    color: var(--mid);
-  }
-  .intensity-value {
-    font-size: 11px;
-    color: var(--light2);
-    letter-spacing: 0.1em;
-  }
-  input[type="range"] {
-    -webkit-appearance: none;
-    appearance: none;
+
+  .control-group input[type=range] {
     width: 100%;
+    -webkit-appearance: none;
     height: 1px;
     background: var(--light1);
     outline: none;
     cursor: pointer;
   }
-  input[type="range"]::-webkit-slider-thumb {
+
+  .control-group input[type=range]::-webkit-slider-thumb {
     -webkit-appearance: none;
-    appearance: none;
-    width: 16px; height: 16px;
+    width: 10px; height: 10px;
     border-radius: 50%;
     background: var(--accent);
     cursor: pointer;
   }
+
+  .intensity-val {
+    font-size: 10px;
+    color: var(--light2);
+    text-align: right;
+    margin-top: 6px;
+    font-family: fot-tsukuardgothic-std, 'Noto Sans JP', sans-serif;
+    letter-spacing: 0.1em;
+  }
+
+  /* ── CTA ── */
   .cta-section {
-    padding: 48px 0 32px;
     border-top: 1px solid var(--light1);
-    text-align: center;
+    padding: 52px 0 48px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: 32px;
   }
-  .cta-label {
+
+  .cta-preset-name {
+    font-family: fot-tsukuardgothic-std, 'Noto Sans JP', sans-serif;
+    font-size: 32px;
+
+    font-weight: 400;
+    color: var(--accent);
+    letter-spacing: 0.02em;
+    display: block;
+    margin-bottom: 10px;
+  }
+
+  .cta-meta {
     font-size: 11px;
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    color: var(--mid);
-    margin-bottom: 16px;
+    letter-spacing: 0.15em;
+    color: var(--ink-dim);
+    font-weight: 300;
+    line-height: 2;
   }
+
   .cta-btn {
-    display: inline-block;
-    padding: 14px 40px;
-    background: var(--accent);
-    color: white;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    padding: 16px 36px;
     text-decoration: none;
+    font-family: fot-tsukuardgothic-std, 'Noto Sans JP', sans-serif;
     font-size: 12px;
     letter-spacing: 0.25em;
     text-transform: uppercase;
-    border-radius: 3px;
-    transition: opacity 0.2s;
+    transition: all 0.4s ease;
+    white-space: nowrap;
+    background: transparent;
   }
-  .cta-btn:hover { opacity: 0.85; }
+
+  .cta-btn:hover {
+    background: var(--accent);
+    color: var(--base);
+  }
+
+  .cta-btn:hover .cta-price {
+    color: rgba(252,252,252,0.6);
+  }
+
+  .cta-price {
+    font-size: 10px;
+    color: var(--light2);
+    letter-spacing: 0.15em;
+    transition: color 0.4s;
+  }
+
+  /* ── Footer ── */
   footer {
-    padding: 32px 0 48px;
+    padding: 28px 0 48px;
+    display: flex;
+    justify-content: space-between;
     border-top: 1px solid var(--light1);
   }
-  .footer-text {
-    font-size: 10px;
+
+  footer p {
+    font-size: 9px;
     letter-spacing: 0.2em;
-    text-transform: uppercase;
     color: var(--light1);
+    font-family: fot-tsukuardgothic-std, 'Noto Sans JP', sans-serif;
+    text-transform: uppercase;
+  }
+
+  .disclaimer {
+    margin-top: 14px;
+    font-size: 10px;
+    color: rgba(115,160,177,0.5);
+    letter-spacing: 0.08em;
     line-height: 1.8;
   }
-  .disclaimer {
-    font-size: 11px;
-    color: var(--light2);
-    line-height: 1.7;
-    margin-top: 6px;
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
   }
-  canvas { display: none; }
+
+  /* ── Responsive ── */
   @media (max-width: 600px) {
-    .wrap { padding: 0 20px; }
-    header { padding: 32px 0 16px; }
-    .hero { padding: 36px 0 28px; }
+    .wrap {
+      padding: 0 20px;
+    }
+    header {
+      padding: 28px 0 14px;
+    }
+    .hero {
+      padding: 40px 0 32px;
+    }
+    .rule {
+      margin-bottom: 20px;
+    }
+    .upload-zone {
+      padding: 40px 16px;
+      margin-bottom: 36px;
+    }
+    .upload-note {
+      font-size: 9px;
+    }
+    .viewer {
+      margin-bottom: 36px;
+    }
+    .cta-section {
+      grid-template-columns: 1fr;
+      padding: 32px 0 28px;
+      gap: 20px;
+    }
+    .cta-btn {
+      width: 100%;
+      justify-content: center;
+      padding: 16px 20px;
+      box-sizing: border-box;
+    }
+    footer {
+      flex-direction: column;
+      gap: 6px;
+      padding: 18px 0 32px;
+    }
+    .disclaimer {
+      font-size: 9px;
+    }
   }
 </style>
 </head>
@@ -1000,12 +1163,12 @@ ${gaScript}
 <div class="wrap">
   <header>
     <span class="wordmark">Presetry</span>
-    <span class="tagline">Preset Trial</span>
+    <span class="tag">Preset Trial</span>
   </header>
 
   <section class="hero">
+    <span class="hero-en">あなたの写真で、<br>試してみてください。</span>
     <span class="preset-chip">Now playing — ${presetName}${sellerTag}</span>
-    <h1 class="hero-heading">あなたの写真で、<br>試してみてください。</h1>
     <p class="hero-desc">写真をアップロードして、<br>このプリセットの世界観を体感してください。</p>
     ${descSection}
   </section>
@@ -1016,45 +1179,52 @@ ${gaScript}
     <div class="rule-line"></div>
   </div>
 
-  <section class="upload-section">
-    <div class="upload-zone" id="uploadZone">
-      <div class="upload-zone-icon">↑</div>
-      <p class="upload-zone-text">写真をドラッグ＆ドロップ<br>またはタップして選択</p>
-      <p class="upload-zone-sub">JPG / PNG / WEBP — RAW非対応</p>
-      <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp">
+  <div class="upload-zone" id="uploadZone">
+    <svg class="upload-icon" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="4" y="9" width="28" height="20" rx="1" stroke="currentColor" stroke-width="1"/>
+      <circle cx="13" cy="17" r="3" stroke="currentColor" stroke-width="1"/>
+      <path d="M4 24l9-7 7 5 5-3 7 5" stroke="currentColor" stroke-width="1" stroke-linejoin="round"/>
+    </svg>
+    <span class="upload-main">写真をドロップ</span>
+    <span class="upload-sub">JPG, PNG 対応 &nbsp;/&nbsp; RAW非対応</span>
+    <span class="upload-note">RAWファイルはブラウザの仕様上表示できません。<br>LightroomやFinderでJPEGに書き出してからお試しください。</span>
+    <input type="file" accept="image/*" id="fileInput">
+  </div>
+
+  <canvas id="processingCanvas"></canvas>
+
+  <div class="viewer" id="viewer">
+    <div class="viewer-head">
+      <span class="viewer-head-label">Before / After</span>
+      <button class="reset-btn" id="resetBtn">別の写真を使う</button>
     </div>
-
-    <div class="viewer" id="viewer">
-      <div class="viewer-header">
-        <span class="viewer-label">Before / After</span>
-        <button class="reset-btn" id="resetBtn">別の写真を使う</button>
+    <div class="comparison-wrap" id="comparisonWrap">
+      <img id="imgBefore" src="" alt="Before">
+      <img id="imgAfter"  src="" alt="After">
+      <div class="slider-line" id="sliderLine"></div>
+      <div class="slider-handle" id="sliderHandle">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M8 9l-4 3 4 3M16 9l4 3-4 3"/>
+        </svg>
       </div>
-      <div class="comparison-wrap" id="comparisonWrap">
-        <img id="imgBefore" src="" alt="Before">
-        <img id="imgAfter"  src="" alt="After">
-        <div class="slider-line" id="sliderLine"></div>
-        <div class="slider-handle" id="sliderHandle">＜ ＞</div>
-      </div>
-      <div class="img-labels">
-        <span class="img-label">Before</span>
-        <span class="img-label">After</span>
-      </div>
-
-      <div class="intensity-section">
-        <div class="intensity-header">
-          <span class="intensity-label">Intensity</span>
-          <span class="intensity-value" id="intensityLabel">100</span>
-        </div>
+      <div class="label-before">Before</div>
+      <div class="label-after">After</div>
+    </div>
+    <div class="controls">
+      <div class="control-group">
+        <label>Intensity</label>
         <input type="range" id="intensitySlider" min="0" max="100" value="100">
+        <div class="intensity-val" id="intensityLabel">100</div>
       </div>
     </div>
-  </section>
+    <p class="disclaimer">※ これはブラウザ上でのシミュレーションです。実際のLightroom処理とは色・階調が異なります。</p>
+  </div>
 
   ${purchaseSection}
 
   <footer>
-    <p class="footer-text">presetry — preset trial experience</p>
-    <p class="disclaimer">これはブラウザ上でのシミュレーションです。実際のLightroom処理とは色・階調が異なります。</p>
+    <p>presetry — preset trial experience</p>
+    <p>© 2026 ${sellerName}</p>
   </footer>
 </div>
 
@@ -1117,7 +1287,7 @@ ${gaScript}
   uploadZone.addEventListener('click', () => fileInput.click());
   resetBtn.addEventListener('click', () => {
     fileInput.value = '';
-    viewer.classList.remove('visible');
+    viewer.classList.remove('active');
     uploadZone.style.display = '';
     originalImageData = null;
   });
@@ -1136,7 +1306,7 @@ ${gaScript}
         imgBefore.src = canvas.toDataURL('image/jpeg', 0.92);
         applyPreset(100);
         uploadZone.style.display = 'none';
-        viewer.classList.add('visible');
+        viewer.classList.add('active');
         sliderPos = 50;
         updateSlider(50);
       };
