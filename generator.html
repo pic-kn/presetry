@@ -597,8 +597,8 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
   const url = URL.createObjectURL(blob);
   const userSlug   = username.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
   const presetSlug = presetName.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
-  const filename = `${presetSlug}.html`;
-  const uploadPath = `sellers/${userSlug}/${presetSlug}.html`;
+  const filename = `index.html`;
+  const uploadPath = `sellers/${userSlug}/${presetSlug}/index.html`;
 
   const downloadBtn = document.getElementById('downloadBtn');
   downloadBtn.href = url;
