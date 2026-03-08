@@ -391,8 +391,7 @@ function checkPw() {
   <div class="result" id="resultEl">
     <p class="result-title">生成完了</p>
     <p class="result-desc" id="resultDesc"></p>
-    <a class="download-btn" id="downloadBtn" href="#" download="">HTMLをダウンロード</a>
-    <button class="download-btn" id="publishBtn" style="margin-top:12px;width:100%;cursor:pointer;border:none;">Presetryに公開する</button>
+    <button class="download-btn" id="publishBtn" style="width:100%;cursor:pointer;border:none;">Presetryに公開する</button>
     <p id="publishStatus" style="font-size:12px;color:var(--mid);margin-top:12px;min-height:16px;text-align:center;letter-spacing:0.05em;"></p>
     <p id="publishUrl" style="font-size:12px;margin-top:8px;text-align:center;"></p>
   </div>
@@ -608,9 +607,6 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
   const filename = `index.html`;
   const uploadPath = `sellers/${userSlug}/${presetSlug}/index.html`;
 
-  const downloadBtn = document.getElementById('downloadBtn');
-  downloadBtn.href = url;
-  downloadBtn.download = filename;
 
   document.getElementById('resultDesc').textContent =
     `「${presetName}」の試着ページが生成されました。`;
@@ -639,8 +635,11 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
       clearTimeout(timeout);
       const data = await res.json();
       if (data.success) {
-        status.textContent = '公開完了！';
-        urlEl.innerHTML = `<a href="${data.url}" target="_blank" style="color:var(--accent);text-decoration:underline;">${data.url}</a>`;
+        status.textContent = '公開処理が完了しました。URLを準備中...';
+        setTimeout(() => {
+          status.textContent = '公開完了！';
+          urlEl.innerHTML = `<a href="${data.url}" target="_blank" style="color:var(--accent);text-decoration:underline;">${data.url}</a><br><span style="font-size:11px;color:var(--mid);letter-spacing:0.05em;">※ アクセスできない場合は少し時間をおいてお試しください。</span>`;
+        }, 10000);
       } else {
         status.textContent = `エラー: ${data.error}`;
         publishBtn.disabled = false;
