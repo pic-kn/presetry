@@ -342,7 +342,7 @@ function checkPw() {
   } else {
     document.getElementById('pwError').textContent = 'アクセスコードが正しくありません';
     document.getElementById('pwInput').value = '';
-    document.getElementById('pwInput').focus();
+    document.getElementById('pwInput').focus({ preventScroll: true });
   }
 }
 </script>
