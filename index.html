@@ -11,16 +11,14 @@
 <meta name="twitter:image" content="https://pic-kn.github.io/presetry/ogp.png">
 <link rel="icon" type="image/svg+xml" href="./favicon.svg">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-1PK3NHVSRM"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-1PK3NHVSRM');
-</script>
-<title>Presetry — preset trial experience</title>
-<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+
+<!-- 修正1: Google Fontsをpreconnect + 一本化（@importを廃止） -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Noto+Sans+JP:wght@300;400&display=swap" rel="stylesheet">
+
+<!-- 修正2: Typekitをpreconnect付きで非同期化 -->
+<link rel="preconnect" href="https://use.typekit.net" crossorigin>
 <script>
   (function(d) {
     var config = {
@@ -31,8 +29,18 @@
     h=d.documentElement,t=setTimeout(function(){h.className=h.className.replace(/\bwf-loading\b/g,"")+" wf-inactive";},config.scriptTimeout),tk=d.createElement("script"),f=false,s=d.getElementsByTagName("script")[0],a;h.className+=" wf-loading";tk.src='https://use.typekit.net/'+config.kitId+'.js';tk.async=true;tk.onload=tk.onreadystatechange=function(){a=this.readyState;if(f||a&&a!="complete"&&a!="loaded")return;f=true;clearTimeout(t);try{Typekit.load(config)}catch(e){}};s.parentNode.insertBefore(tk,s)
   })(document);
 </script>
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-1PK3NHVSRM"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-1PK3NHVSRM');
+</script>
+
+<title>Presetry — preset trial experience</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400&display=swap');
   :root {
     --base:    #FCFCFC;
     --accent:  #3E7E9A;
@@ -56,7 +64,6 @@
     overflow-x: hidden;
   }
 
-  /* Subtle noise texture overlay */
   body::after {
     content: '';
     position: fixed;
@@ -67,7 +74,6 @@
     opacity: 0.5;
   }
 
-  /* Atmospheric gradient */
   body::before {
     content: '';
     position: fixed;
@@ -87,7 +93,6 @@
     padding: 0 32px;
   }
 
-  /* ── Header ── */
   header {
     padding: 52px 0 0;
     display: flex;
@@ -114,11 +119,11 @@
     font-family: fot-tsukuardgothic-std, 'Noto Sans JP', sans-serif;
   }
 
-  /* ── Hero ── */
+  /* 修正: opacity:0スタートをやめてLCPを即時計測可能に */
   .hero {
     padding: 72px 0 64px;
-    opacity: 0;
-    animation: rise 1.2s cubic-bezier(0.16,1,0.3,1) 0.1s forwards;
+    opacity: 1;
+    animation: rise 1.2s cubic-bezier(0.16,1,0.3,1) 0.1s both;
   }
 
   .hero-en {
@@ -143,7 +148,6 @@
     font-family: fot-tsukuardgothic-std, 'Noto Sans JP', sans-serif;
   }
 
-
   .hero-desc {
     font-size: 12px;
     color: var(--ink-dim);
@@ -153,7 +157,6 @@
     font-weight: 300;
   }
 
-  /* ── Rule ── */
   .rule {
     display: flex;
     align-items: center;
@@ -178,7 +181,6 @@
     white-space: nowrap;
   }
 
-  /* ── Upload ── */
   .upload-zone {
     border: 1px solid var(--light1);
     padding: 60px 24px;
@@ -240,7 +242,6 @@
     line-height: 1.9;
   }
 
-  /* ── Viewer ── */
   .viewer { display: none; margin-bottom: 56px; }
   .viewer.active { display: block; }
 
@@ -341,7 +342,6 @@
 
   #processingCanvas { display: none; }
 
-  /* ── Controls ── */
   .controls { margin-top: 20px; }
 
   .control-group label {
@@ -380,7 +380,6 @@
     letter-spacing: 0.1em;
   }
 
-  /* ── CTA ── */
   .cta-section {
     border-top: 1px solid var(--light1);
     padding: 52px 0 48px;
@@ -393,7 +392,6 @@
   .cta-preset-name {
     font-family: fot-tsukuardgothic-std, 'Noto Sans JP', sans-serif;
     font-size: 32px;
-
     font-weight: 400;
     color: var(--accent);
     letter-spacing: 0.02em;
@@ -443,7 +441,6 @@
     transition: color 0.4s;
   }
 
-  /* ── Footer ── */
   footer {
     padding: 28px 0 48px;
     display: flex;
@@ -466,54 +463,24 @@
     letter-spacing: 0.08em;
     line-height: 1.8;
   }
+
   @keyframes rise {
     from { opacity: 0; transform: translateY(14px); }
     to   { opacity: 1; transform: translateY(0); }
   }
 
-  /* ── Responsive ── */
   @media (max-width: 600px) {
-    .wrap {
-      padding: 0 20px;
-    }
-    header {
-      padding: 28px 0 14px;
-    }
-    .hero {
-      padding: 40px 0 32px;
-    }
-    .rule {
-      margin-bottom: 20px;
-    }
-    .upload-zone {
-      padding: 40px 16px;
-      margin-bottom: 36px;
-    }
-    .upload-note {
-      font-size: 9px;
-    }
-    .viewer {
-      margin-bottom: 36px;
-    }
-    .cta-section {
-      grid-template-columns: 1fr;
-      padding: 32px 0 28px;
-      gap: 20px;
-    }
-    .cta-btn {
-      width: 100%;
-      justify-content: center;
-      padding: 16px 20px;
-      box-sizing: border-box;
-    }
-    footer {
-      flex-direction: column;
-      gap: 6px;
-      padding: 18px 0 32px;
-    }
-    .disclaimer {
-      font-size: 9px;
-    }
+    .wrap { padding: 0 20px; }
+    header { padding: 28px 0 14px; }
+    .hero { padding: 40px 0 32px; }
+    .rule { margin-bottom: 20px; }
+    .upload-zone { padding: 40px 16px; margin-bottom: 36px; }
+    .upload-note { font-size: 9px; }
+    .viewer { margin-bottom: 36px; }
+    .cta-section { grid-template-columns: 1fr; padding: 32px 0 28px; gap: 20px; }
+    .cta-btn { width: 100%; justify-content: center; padding: 16px 20px; box-sizing: border-box; }
+    footer { flex-direction: column; gap: 6px; padding: 18px 0 32px; }
+    .disclaimer { font-size: 9px; }
   }
 </style>
 </head>
@@ -598,63 +565,31 @@
   <footer>
     <p>presetry — preset trial experience</p>
     <p>© 2026 keiju &nbsp;/&nbsp; @pic_kn__</p>
-    <p style="margin-top:8px;"><a href="./for-sellers.html" style="font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--light1);text-decoration:none;border-bottom:1px solid var(--light1);padding-bottom:1px;transition:color 0.2s;" onmouseover="this.style.color='var(--mid)'" onmouseout="this.style.color='var(--light1)'">販売事業者様はこちら</a></p>
+    <p style="margin-top:8px;"><a href=".\/for-sellers.html" style="font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--light1);text-decoration:none;border-bottom:1px solid var(--light1);padding-bottom:1px;transition:color 0.2s;" onmouseover="this.style.color='var(--mid)'" onmouseout="this.style.color='var(--light1)'">販売事業者様はこちら</a></p>
   </footer>
 
 </div>
 
 <script>
-  // Ephemeral Blue — exact XMP parameters
   const preset = {
-    // Tone
-    clarity: -22,
-    vibrance: -3,
-    saturation: -11,
-    dehaze: -6,
-    texture: 20,
-    // Vignette
-    vignetteAmount: 22,
-    vignetteMidpoint: 50,
-    // Grain
-    grainAmount: 47,
-    grainSize: 80,
-    // HSL Hue
-    hueYellow: 36,
-    hueGreen: -67,
-    hueBlue: 19,
-    // HSL Saturation
-    satYellow: -6,
-    satGreen: -20,
-    // HSL Luminance
-    lumGreen: 36,
-    lumBlue: -28,
-    // Color Grade (midtone: hue 221°, sat 80% → deep blue)
-    colorGradeMidHue: 221,
-    colorGradeMidSat: 80,
-    // Split toning shadows: hue 224°, sat 19%
-    shadowToneHue: 224,
-    shadowToneSat: 19,
-    // RGB channel mixer
-    redHue: 61,
-    greenHue: 100,
-    blueHue: -13,
+    clarity: -22, vibrance: -3, saturation: -11, dehaze: -6, texture: 20,
+    vignetteAmount: 22, vignetteMidpoint: 50, grainAmount: 47, grainSize: 80,
+    hueYellow: 36, hueGreen: -67, hueBlue: 19, satYellow: -6, satGreen: -20,
+    lumGreen: 36, lumBlue: -28, colorGradeMidHue: 221, colorGradeMidSat: 80,
+    shadowToneHue: 224, shadowToneSat: 19, redHue: 61, greenHue: 100, blueHue: -13,
   };
 
-  // Tone curves derived from 7 actual Lightroom before/after pairs (16-step resolution)
   const curves = {
     red:   [[0,0],[16,25],[32,33],[48,50],[64,81],[80,113],[96,143],[112,169],[128,189],[144,204],[160,216],[176,228],[192,236],[208,241],[224,246],[240,253],[255,255]],
     green: [[0,0],[16,48],[32,64],[48,86],[64,114],[80,145],[96,169],[112,187],[128,201],[144,212],[160,220],[176,229],[192,234],[208,238],[224,244],[240,251],[255,255]],
     blue:  [[0,0],[16,57],[32,80],[48,108],[64,134],[80,161],[96,179],[112,192],[128,203],[144,212],[160,220],[176,226],[192,230],[208,237],[224,243],[240,252],[255,255]],
   };
 
-  // Build LUT from curve control points using linear interpolation
   function buildLUT(points) {
     const lut = new Uint8Array(256);
     for (let x = 0; x < 256; x++) {
-      // Clamp to endpoints
       if (x <= points[0][0]) { lut[x] = points[0][1]; continue; }
       if (x >= points[points.length-1][0]) { lut[x] = points[points.length-1][1]; continue; }
-      // Find segment
       let i = 0;
       while (i < points.length - 2 && points[i+1][0] <= x) i++;
       const x0 = points[i][0], y0 = points[i][1];
@@ -665,17 +600,11 @@
     return lut;
   }
 
-  const redLUT   = buildLUT(curves.red);
+  const redLUT = buildLUT(curves.red);
   const greenLUT = buildLUT(curves.green);
-  const blueLUT  = buildLUT(curves.blue);
+  const blueLUT = buildLUT(curves.blue);
 
-  console.log('Red LUT check [0,64,128,192]:', redLUT[0], redLUT[64], redLUT[128], redLUT[192]);
-  console.log('Green LUT check [0,64,128,192]:', greenLUT[0], greenLUT[64], greenLUT[128], greenLUT[192]);
-  console.log('Blue LUT check [0,64,128,192]:', blueLUT[0], blueLUT[64], blueLUT[128], blueLUT[192]);
-
-  let originalImageData = null;
-  let sliderPos = 50;
-  let isDragging = false;
+  let originalImageData = null, sliderPos = 50, isDragging = false;
 
   const uploadZone = document.getElementById('uploadZone');
   const fileInput = document.getElementById('fileInput');
@@ -691,37 +620,26 @@
   const canvas = document.getElementById('processingCanvas');
   const ctx = canvas.getContext('2d');
 
-  // Upload handlers
   uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('drag-over'); });
   uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag-over'));
   uploadZone.addEventListener('drop', e => {
-    e.preventDefault();
-    uploadZone.classList.remove('drag-over');
+    e.preventDefault(); uploadZone.classList.remove('drag-over');
     const file = e.dataTransfer.files[0];
     if (file && file.type.startsWith('image/')) processFile(file);
   });
-  fileInput.addEventListener('change', e => {
-    if (e.target.files[0]) processFile(e.target.files[0]);
-  });
+  fileInput.addEventListener('change', e => { if (e.target.files[0]) processFile(e.target.files[0]); });
 
   function processFile(file) {
     const reader = new FileReader();
     reader.onload = e => {
       const img = new Image();
       img.onload = () => {
-        // Set canvas size
-        const maxW = 1200;
-        const scale = Math.min(1, maxW / img.width);
-        canvas.width = img.width * scale;
-        canvas.height = img.height * scale;
+        const maxW = 1200, scale = Math.min(1, maxW / img.width);
+        canvas.width = img.width * scale; canvas.height = img.height * scale;
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
         originalImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-
-        // Before = original (save before any processing)
         imgBefore.src = canvas.toDataURL();
-        // After = preset applied
         applyPreset(100);
-
         uploadZone.style.display = 'none';
         viewer.classList.add('active');
         updateSlider(50);
@@ -731,7 +649,6 @@
     reader.readAsDataURL(file);
   }
 
-  // RGB to HSL
   function rgbToHsl(r, g, b) {
     const max = Math.max(r,g,b), min = Math.min(r,g,b);
     let h, s, l = (max+min)/2;
@@ -755,13 +672,10 @@
       if (t<2/3) return p+(q-p)*(2/3-t)*6;
       return p;
     };
-    const q = l<0.5 ? l*(1+s) : l+s-l*s;
-    const p = 2*l-q;
+    const q = l<0.5 ? l*(1+s) : l+s-l*s, p = 2*l-q;
     return [hue2rgb(p,q,h+1/3), hue2rgb(p,q,h), hue2rgb(p,q,h-1/3)];
   }
 
-  // HSL range weights for Lightroom-style HSL panel
-  // Returns weight [0-1] for how much a hue affects a given color range
   function hueWeight(hDeg, centerDeg, width) {
     let diff = Math.abs(hDeg - centerDeg);
     if (diff > 180) diff = 360 - diff;
@@ -771,118 +685,61 @@
   function applyPreset(intensity) {
     if (!originalImageData) return;
     const f = intensity / 100;
-
-    const imageData = new ImageData(
-      new Uint8ClampedArray(originalImageData.data),
-      originalImageData.width,
-      originalImageData.height
-    );
+    const imageData = new ImageData(new Uint8ClampedArray(originalImageData.data), originalImageData.width, originalImageData.height);
     const data = imageData.data;
-
     for (let i = 0; i < data.length; i += 4) {
       let r = data[i], g = data[i+1], b = data[i+2];
-
-      // 1. LUT適用
-      r = r + (redLUT[r]   - r) * f;
+      r = r + (redLUT[r] - r) * f;
       g = g + (greenLUT[g] - g) * f;
-      b = b + (blueLUT[b]  - b) * f;
-
-      // 2. HSLパネルシミュレーション
-      let [h, s, l] = rgbToHsl(r / 255, g / 255, b / 255);
+      b = b + (blueLUT[b] - b) * f;
+      let [h, s, l] = rgbToHsl(r/255, g/255, b/255);
       const hDeg = h * 360;
-
-      // 各色相の重み（Lightroomの色相範囲に近似）
-      const wGreen  = hueWeight(hDeg, 120, 50) * f;
-      const wBlue   = hueWeight(hDeg, 220, 55) * f;
-      const wYellow = hueWeight(hDeg,  60, 40) * f;
-
-      // Luminance調整
-      l += wGreen  * (preset.lumGreen / 100) * 0.18;
-      l += wBlue   * (preset.lumBlue  / 100) * 0.18;
-      l  = Math.max(0, Math.min(1, l));
-
-      // Saturation調整
-      s += wGreen  * (preset.satGreen  / 100) * 0.2;
-      s += wYellow * (preset.satYellow / 100) * 0.2;
-      // 全体のSaturation・Vibrance
-      s += (preset.saturation / 100) * f * 0.15;
-      s  = Math.max(0, Math.min(1, s));
-
-      // Hue調整
-      h += wGreen  * (preset.hueGreen  / 360) * 0.3;
-      h += wBlue   * (preset.hueBlue   / 360) * 0.3;
-      h += wYellow * (preset.hueYellow / 360) * 0.3;
-      h  = ((h % 1) + 1) % 1;
-
-      const [nr, ng, nb] = hslToRgb(h, s, l);
-      r = nr * 255; g = ng * 255; b = nb * 255;
-
-      // 3. Film grain
-      const noise = (Math.random() - 0.5) * (preset.grainAmount / 100) * f * 12;
-      data[i]   = Math.max(0, Math.min(255, r + noise));
-      data[i+1] = Math.max(0, Math.min(255, g + noise));
-      data[i+2] = Math.max(0, Math.min(255, b + noise));
+      const wGreen = hueWeight(hDeg,120,50)*f, wBlue = hueWeight(hDeg,220,55)*f, wYellow = hueWeight(hDeg,60,40)*f;
+      l += wGreen*(preset.lumGreen/100)*0.18 + wBlue*(preset.lumBlue/100)*0.18;
+      l = Math.max(0, Math.min(1, l));
+      s += wGreen*(preset.satGreen/100)*0.2 + wYellow*(preset.satYellow/100)*0.2 + (preset.saturation/100)*f*0.15;
+      s = Math.max(0, Math.min(1, s));
+      h += wGreen*(preset.hueGreen/360)*0.3 + wBlue*(preset.hueBlue/360)*0.3 + wYellow*(preset.hueYellow/360)*0.3;
+      h = ((h%1)+1)%1;
+      const [nr,ng,nb] = hslToRgb(h,s,l);
+      const noise = (Math.random()-0.5)*(preset.grainAmount/100)*f*12;
+      data[i]   = Math.max(0,Math.min(255,nr*255+noise));
+      data[i+1] = Math.max(0,Math.min(255,ng*255+noise));
+      data[i+2] = Math.max(0,Math.min(255,nb*255+noise));
     }
-
-    // 4. Vignette
-    const W = imageData.width, H = imageData.height;
-    const cx = W / 2, cy = H / 2;
-    const maxDist = Math.sqrt(cx * cx + cy * cy);
-    const vigStrength = (preset.vignetteAmount / 100) * f * 0.45;
-    for (let y = 0; y < H; y++) {
-      for (let x = 0; x < W; x++) {
-        const idx = (y * W + x) * 4;
-        const dist = Math.sqrt((x - cx) ** 2 + (y - cy) ** 2) / maxDist;
-        const mid = preset.vignetteMidpoint / 100;
-        const vig = dist > mid ? (dist - mid) / (1 - mid) : 0;
-        const factor = Math.max(0, 1 - vigStrength * vig * vig);
-        data[idx]   = Math.round(data[idx]   * factor);
-        data[idx+1] = Math.round(data[idx+1] * factor);
-        data[idx+2] = Math.round(data[idx+2] * factor);
-      }
+    const W=imageData.width,H=imageData.height,cx=W/2,cy=H/2;
+    const maxDist=Math.sqrt(cx*cx+cy*cy), vigStrength=(preset.vignetteAmount/100)*f*0.45;
+    for (let y=0;y<H;y++) for (let x=0;x<W;x++) {
+      const idx=(y*W+x)*4, dist=Math.sqrt((x-cx)**2+(y-cy)**2)/maxDist;
+      const mid=preset.vignetteMidpoint/100, vig=dist>mid?(dist-mid)/(1-mid):0;
+      const factor=Math.max(0,1-vigStrength*vig*vig);
+      data[idx]=Math.round(data[idx]*factor); data[idx+1]=Math.round(data[idx+1]*factor); data[idx+2]=Math.round(data[idx+2]*factor);
     }
-
-    ctx.putImageData(imageData, 0, 0);
-    imgAfter.src = canvas.toDataURL('image/jpeg', 0.92);
+    ctx.putImageData(imageData,0,0);
+    imgAfter.src=canvas.toDataURL('image/jpeg',0.92);
   }
 
-  // Intensity slider
-  intensitySlider.addEventListener('input', e => {
-    const val = parseInt(e.target.value);
-    intensityLabel.textContent = val;
-    applyPreset(val);
-  });
+  intensitySlider.addEventListener('input', e => { const val=parseInt(e.target.value); intensityLabel.textContent=val; applyPreset(val); });
 
-  // Comparison slider
-  // Left = Before (original), Right = After (preset)
-  // imgAfter sits on top, clipped to show only the right portion
   function updateSlider(pos) {
-    sliderPos = Math.max(0, Math.min(100, pos));
-    const pct = sliderPos + '%';
-    sliderLine.style.left = pct;
-    sliderHandle.style.left = pct;
-    // Show After on the RIGHT side of the slider
-    imgAfter.style.clipPath = `inset(0 0 0 ${sliderPos}%)`;
+    sliderPos=Math.max(0,Math.min(100,pos));
+    sliderLine.style.left=sliderPos+'%'; sliderHandle.style.left=sliderPos+'%';
+    imgAfter.style.clipPath=`inset(0 0 0 ${sliderPos}%)`;
   }
 
-  comparisonWrap.addEventListener('mousedown', e => { isDragging = true; handleMove(e); });
-  comparisonWrap.addEventListener('touchstart', e => { isDragging = true; handleMove(e.touches[0]); });
-  document.addEventListener('mousemove', e => { if (isDragging) handleMove(e); });
-  document.addEventListener('touchmove', e => { if (isDragging) handleMove(e.touches[0]); });
-  document.addEventListener('mouseup', () => isDragging = false);
-  document.addEventListener('touchend', () => isDragging = false);
+  comparisonWrap.addEventListener('mousedown', e=>{isDragging=true;handleMove(e);});
+  comparisonWrap.addEventListener('touchstart', e=>{isDragging=true;handleMove(e.touches[0]);});
+  document.addEventListener('mousemove', e=>{if(isDragging)handleMove(e);});
+  document.addEventListener('touchmove', e=>{if(isDragging)handleMove(e.touches[0]);});
+  document.addEventListener('mouseup', ()=>isDragging=false);
+  document.addEventListener('touchend', ()=>isDragging=false);
 
   function handleMove(e) {
-    const rect = comparisonWrap.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    updateSlider((x / rect.width) * 100);
+    const rect=comparisonWrap.getBoundingClientRect();
+    updateSlider((e.clientX-rect.left)/rect.width*100);
   }
 
-  // 「別の写真を使う」→ ファイル選択ダイアログを直接開く
-  resetBtn.addEventListener('click', () => {
-    fileInput.value = '';
-    fileInput.click();
-  });
+  resetBtn.addEventListener('click', ()=>{ fileInput.value=''; fileInput.click(); });
 </script>
 </body>
 </html>
