@@ -1451,6 +1451,9 @@ ${purchaseSection}
     applyPreset(val);
   });
 
+  // 画像保存ブロック
+  document.addEventListener('contextmenu', e => { if (e.target.tagName === 'IMG' || e.target.tagName === 'CANVAS') e.preventDefault(); });
+
   // Comparison slider
   // Left = Before (original), Right = After (preset)
   // imgAfter sits on top, clipped to show only the right portion
