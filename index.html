@@ -798,18 +798,10 @@
   }
 
   // Intensity slider — rAFで描画タイミングを最適化
-  let rafPending = false;
-  let pendingIntensity = 100;
   intensitySlider.addEventListener('input', e => {
-    pendingIntensity = parseInt(e.target.value);
-    intensityLabel.textContent = pendingIntensity;
-    if (!rafPending) {
-      rafPending = true;
-      requestAnimationFrame(() => {
-        applyPreset(pendingIntensity);
-        rafPending = false;
-      });
-    }
+    const val = parseInt(e.target.value);
+    intensityLabel.textContent = val;
+    applyPreset(val);
   });
 
   // Comparison slider
