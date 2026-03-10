@@ -564,6 +564,7 @@
     <div class="comparison-wrap" id="comparisonWrap">
       <img id="imgBefore" src="" alt="Before">
       <canvas id="afterCanvas"></canvas>
+      <img id="afterSaveImg" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none;z-index:10;">
       <div class="slider-line" id="sliderLine"></div>
       <div class="slider-handle" id="sliderHandle">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -836,11 +837,13 @@
   let sliderUsed = false;
   comparisonWrap.addEventListener('mousedown', e => {
     isDragging = true;
+    clearTimeout(longPressTimer);
     handleMove(e);
     if (!sliderUsed) { sliderUsed = true; gtag('event', 'comparison_slider_used', { event_category: 'engagement' }); }
   });
   comparisonWrap.addEventListener('touchstart', e => {
     isDragging = true;
+    clearTimeout(longPressTimer);
     handleMove(e.touches[0]);
     if (!sliderUsed) { sliderUsed = true; gtag('event', 'comparison_slider_used', { event_category: 'engagement' }); }
   });
@@ -848,6 +851,20 @@
   document.addEventListener('touchmove', e => { if (isDragging) { e.preventDefault(); handleMove(e.touches[0]); } }, { passive: false });
   document.addEventListener('mouseup', () => isDragging = false);
   document.addEventListener('touchend', () => isDragging = false);
+
+  // 長押しでAfter画像を保存できる裏機能
+  let longPressTimer = null;
+  const afterSaveImg = document.getElementById('afterSaveImg');
+  afterCanvas.addEventListener('touchstart', e => {
+    longPressTimer = setTimeout(() => {
+      afterSaveImg.src = afterCanvas.toDataURL('image/jpeg', 0.95);
+      afterSaveImg.style.display = 'block';
+      setTimeout(() => { afterSaveImg.style.display = 'none'; }, 3000);
+    }, 600);
+  }, { passive: true });
+  afterCanvas.addEventListener('touchend', () => { clearTimeout(longPressTimer); });
+  afterCanvas.addEventListener('touchmove', () => { clearTimeout(longPressTimer); });
+
 
   function handleMove(e) {
     const rect = comparisonWrap.getBoundingClientRect();
