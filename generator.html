@@ -335,15 +335,30 @@
 </div>
 
 <script>
-function checkPw() {
+async function checkPw() {
   const val = document.getElementById('pwInput').value;
-  if (val === 'presetry-beta') {
-    document.getElementById('passwordGate').style.display = 'none';
-  } else {
-    document.getElementById('pwError').textContent = 'アクセスコードが正しくありません';
-    document.getElementById('pwInput').value = '';
-    document.getElementById('pwInput').focus({ preventScroll: true });
+  const btn = document.querySelector('#passwordGate button');
+  btn.disabled = true;
+  btn.textContent = '...';
+  try {
+    const res = await fetch('https://presetry-push.pickn-photograph001.workers.dev/auth', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code: val })
+    });
+    const data = await res.json();
+    if (data.success) {
+      document.getElementById('passwordGate').style.display = 'none';
+    } else {
+      document.getElementById('pwError').textContent = 'アクセスコードが正しくありません';
+      document.getElementById('pwInput').value = '';
+      document.getElementById('pwInput').focus({ preventScroll: true });
+    }
+  } catch(e) {
+    document.getElementById('pwError').textContent = 'ネットワークエラーが発生しました';
   }
+  btn.disabled = false;
+  btn.textContent = 'Enter';
 }
 </script>
 
