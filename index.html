@@ -285,7 +285,8 @@
     touch-action: none;
   }
 
-  .comparison-wrap img {
+  .comparison-wrap img,
+  .comparison-wrap canvas {
     position: absolute;
     inset: 0;
     width: 100%;
@@ -295,6 +296,7 @@
   }
 
   .img-after { clip-path: inset(0 50% 0 0); }
+  #afterCanvas { clip-path: inset(0 50% 0 0); }
 
   .slider-line {
     position: absolute;
@@ -362,6 +364,7 @@
     background: var(--light1);
     outline: none;
     cursor: pointer;
+    touch-action: pan-x;
   }
 
   .control-group input[type=range]::-webkit-slider-thumb {
@@ -560,7 +563,7 @@
 
     <div class="comparison-wrap" id="comparisonWrap">
       <img id="imgBefore" src="" alt="Before">
-      <img id="imgAfter" src="" alt="After">
+      <canvas id="afterCanvas"></canvas>
       <div class="slider-line" id="sliderLine"></div>
       <div class="slider-handle" id="sliderHandle">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -682,7 +685,8 @@
   const fileInput = document.getElementById('fileInput');
   const viewer = document.getElementById('viewer');
   const imgBefore = document.getElementById('imgBefore');
-  const imgAfter = document.getElementById('imgAfter');
+  const afterCanvas = document.getElementById('afterCanvas');
+  const afterCtx = afterCanvas.getContext('2d');
   const sliderLine = document.getElementById('sliderLine');
   const sliderHandle = document.getElementById('sliderHandle');
   const comparisonWrap = document.getElementById('comparisonWrap');
@@ -711,7 +715,7 @@
       const img = new Image();
       img.onload = () => {
         // Set canvas size
-        const maxW = 1200;
+        const maxW = 600;
         const scale = Math.min(1, maxW / img.width);
         canvas.width = img.width * scale;
         canvas.height = img.height * scale;
@@ -720,6 +724,9 @@
 
         // Before = original (save before any processing)
         imgBefore.src = canvas.toDataURL();
+        // afterCanvasのサイズを合わせておく
+        afterCanvas.width = canvas.width;
+        afterCanvas.height = canvas.height;
         // After = preset applied
         applyPreset(100);
 
@@ -845,14 +852,27 @@
     }
 
     ctx.putImageData(imageData, 0, 0);
-    imgAfter.src = canvas.toDataURL('image/jpeg', 0.92);
+    // afterCanvasに直接コピー（toDataURL廃止）
+    if (afterCanvas.width !== imageData.width || afterCanvas.height !== imageData.height) {
+      afterCanvas.width = imageData.width;
+      afterCanvas.height = imageData.height;
+    }
+    afterCtx.putImageData(imageData, 0, 0);
   }
 
-  // Intensity slider
+  // Intensity slider — rAFで描画タイミングを最適化
+  let rafPending = false;
+  let pendingIntensity = 100;
   intensitySlider.addEventListener('input', e => {
-    const val = parseInt(e.target.value);
-    intensityLabel.textContent = val;
-    applyPreset(val);
+    pendingIntensity = parseInt(e.target.value);
+    intensityLabel.textContent = pendingIntensity;
+    if (!rafPending) {
+      rafPending = true;
+      requestAnimationFrame(() => {
+        applyPreset(pendingIntensity);
+        rafPending = false;
+      });
+    }
   });
 
   // Comparison slider
@@ -864,7 +884,7 @@
     sliderLine.style.left = pct;
     sliderHandle.style.left = pct;
     // Show After on the RIGHT side of the slider
-    imgAfter.style.clipPath = `inset(0 0 0 ${sliderPos}%)`;
+    afterCanvas.style.clipPath = `inset(0 0 0 ${sliderPos}%)`;
   }
 
   let sliderUsed = false;
