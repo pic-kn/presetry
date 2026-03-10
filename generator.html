@@ -12,7 +12,14 @@
 <link rel="icon" type="image/svg+xml" href="./favicon.svg">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Presetry Generator</title>
+
+<!-- 修正1: preconnect + 一本化 -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400&display=swap" rel="stylesheet">
+
+<!-- 修正2: Typekitにpreconnect追加 -->
+<link rel="preconnect" href="https://use.typekit.net" crossorigin>
 <script>
   (function(d) {
     var config = { kitId: 'upz2rzr', scriptTimeout: 3000, async: true },
@@ -59,11 +66,7 @@
     margin-bottom: 48px;
     line-height: 1.7;
   }
-
-  /* ── Section ── */
-  .section {
-    margin-bottom: 40px;
-  }
+  .section { margin-bottom: 40px; }
   .section-label {
     font-size: 11px;
     letter-spacing: 0.25em;
@@ -71,8 +74,6 @@
     color: var(--mid);
     margin-bottom: 12px;
   }
-
-  /* ── Input ── */
   input[type="text"], input[type="email"], textarea {
     width: 100%;
     padding: 12px 16px;
@@ -85,225 +86,59 @@
     outline: none;
     transition: border-color 0.2s;
   }
-  input[type="text"]:focus, input[type="email"]:focus, textarea:focus {
-    border-color: var(--mid);
-  }
-  textarea {
-    resize: vertical;
-    min-height: 80px;
-    line-height: 1.6;
-  }
-  .input-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-  }
-
-  /* ── Pair upload ── */
-  .pairs-container {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
-  .pair {
-    border: 1px solid var(--light1);
-    border-radius: 6px;
-    padding: 16px;
-    background: white;
-  }
-  .pair-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 12px;
-  }
-  .pair-number {
-    font-size: 11px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--mid);
-  }
-  .pair-remove {
-    font-size: 11px;
-    color: var(--light1);
-    cursor: pointer;
-    background: none;
-    border: none;
-    padding: 0;
-    transition: color 0.2s;
-  }
+  input[type="text"]:focus, input[type="email"]:focus, textarea:focus { border-color: var(--mid); }
+  textarea { resize: vertical; min-height: 80px; line-height: 1.6; }
+  .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .pairs-container { display: flex; flex-direction: column; gap: 16px; }
+  .pair { border: 1px solid var(--light1); border-radius: 6px; padding: 16px; background: white; }
+  .pair-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .pair-number { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--mid); }
+  .pair-remove { font-size: 11px; color: var(--light1); cursor: pointer; background: none; border: none; padding: 0; transition: color 0.2s; }
   .pair-remove:hover { color: var(--accent); }
-  .pair-uploads {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-  }
+  .pair-uploads { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .upload-box {
-    position: relative;
-    border: 1px dashed var(--light1);
-    border-radius: 4px;
-    height: 120px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    overflow: hidden;
-    transition: border-color 0.2s;
+    position: relative; border: 1px dashed var(--light1); border-radius: 4px;
+    height: 120px; display: flex; flex-direction: column; align-items: center;
+    justify-content: center; cursor: pointer; overflow: hidden; transition: border-color 0.2s;
   }
   .upload-box:hover { border-color: var(--mid); }
   .upload-box.loaded { border-style: solid; border-color: var(--light1); }
-  .upload-box img {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    opacity: 0.85;
-  }
-  .upload-label {
-    font-size: 10px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--mid);
-    position: relative;
-    z-index: 1;
-    pointer-events: none;
-  }
-  .upload-box.loaded .upload-label {
-    background: rgba(252,252,252,0.85);
-    padding: 3px 8px;
-    border-radius: 2px;
-  }
-  .upload-box input[type="file"] {
-    position: absolute;
-    inset: 0;
-    opacity: 0;
-    cursor: pointer;
-    width: 100%;
-    height: 100%;
-  }
-  .pair-status {
-    font-size: 11px;
-    color: var(--mid);
-    margin-top: 8px;
-    text-align: center;
-    min-height: 16px;
-  }
+  .upload-box img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.85; }
+  .upload-label { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--mid); position: relative; z-index: 1; pointer-events: none; }
+  .upload-box.loaded .upload-label { background: rgba(252,252,252,0.85); padding: 3px 8px; border-radius: 2px; }
+  .upload-box input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+  .pair-status { font-size: 11px; color: var(--mid); margin-top: 8px; text-align: center; min-height: 16px; }
   .pair-status.ok { color: var(--accent); }
-
-  /* ── Add pair button ── */
   .add-pair {
-    border: 1px dashed var(--light1);
-    border-radius: 6px;
-    padding: 14px;
-    text-align: center;
-    cursor: pointer;
-    font-size: 12px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--mid);
-    background: none;
-    width: 100%;
-    transition: border-color 0.2s, color 0.2s;
+    border: 1px dashed var(--light1); border-radius: 6px; padding: 14px; text-align: center;
+    cursor: pointer; font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--mid); background: none; width: 100%; transition: border-color 0.2s, color 0.2s;
   }
   .add-pair:hover { border-color: var(--mid); color: var(--accent); }
-
-  /* ── Generate button ── */
   .generate-btn {
-    width: 100%;
-    padding: 16px;
-    background: var(--accent);
-    color: white;
-    border: none;
-    border-radius: 4px;
-    font-size: 13px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: opacity 0.2s;
-    margin-top: 8px;
+    width: 100%; padding: 16px; background: var(--accent); color: white; border: none;
+    border-radius: 4px; font-size: 13px; letter-spacing: 0.2em; text-transform: uppercase;
+    cursor: pointer; transition: opacity 0.2s; margin-top: 8px;
   }
   .generate-btn:hover { opacity: 0.85; }
   .generate-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-
-  /* ── Progress ── */
-  .progress {
-    display: none;
-    margin-top: 24px;
-    padding: 20px;
-    border: 1px solid var(--light1);
-    border-radius: 6px;
-    background: white;
-  }
+  .progress { display: none; margin-top: 24px; padding: 20px; border: 1px solid var(--light1); border-radius: 6px; background: white; }
   .progress.visible { display: block; }
-  .progress-label {
-    font-size: 12px;
-    color: var(--ink-dim);
-    margin-bottom: 10px;
-    letter-spacing: 0.1em;
-  }
-  .progress-bar-wrap {
-    height: 3px;
-    background: var(--light1);
-    border-radius: 2px;
-    overflow: hidden;
-  }
-  .progress-bar {
-    height: 100%;
-    background: var(--accent);
-    border-radius: 2px;
-    transition: width 0.3s;
-    width: 0%;
-  }
-
-  /* ── Result ── */
-  .result {
-    display: none;
-    margin-top: 24px;
-    padding: 24px;
-    border: 1px solid var(--accent);
-    border-radius: 6px;
-    background: white;
-  }
+  .progress-label { font-size: 12px; color: var(--ink-dim); margin-bottom: 10px; letter-spacing: 0.1em; }
+  .progress-bar-wrap { height: 3px; background: var(--light1); border-radius: 2px; overflow: hidden; }
+  .progress-bar { height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.3s; width: 0%; }
+  .result { display: none; margin-top: 24px; padding: 24px; border: 1px solid var(--accent); border-radius: 6px; background: white; }
   .result.visible { display: block; }
-  .result-title {
-    font-size: 13px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 8px;
-  }
-  .result-desc {
-    font-size: 13px;
-    color: var(--ink-dim);
-    line-height: 1.7;
-    margin-bottom: 16px;
-  }
+  .result-title { font-size: 13px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; }
+  .result-desc { font-size: 13px; color: var(--ink-dim); line-height: 1.7; margin-bottom: 16px; }
   .download-btn {
-    display: inline-block;
-    padding: 12px 24px;
-    background: var(--accent);
-    color: white;
-    border: none;
-    border-radius: 4px;
-    font-size: 12px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    cursor: pointer;
-    text-decoration: none;
-    transition: opacity 0.2s;
+    display: inline-block; padding: 12px 24px; background: var(--accent); color: white;
+    border: none; border-radius: 4px; font-size: 12px; letter-spacing: 0.2em;
+    text-transform: uppercase; cursor: pointer; text-decoration: none; transition: opacity 0.2s;
   }
   .download-btn:hover { opacity: 0.85; }
-
-  .divider {
-    height: 1px;
-    background: var(--light1);
-    margin: 40px 0;
-  }
-
+  .divider { height: 1px; background: var(--light1); margin: 40px 0; }
   canvas { display: none; }
-
   @media (max-width: 600px) {
     .input-row { grid-template-columns: 1fr; }
     .pair-uploads { grid-template-columns: 1fr 1fr; }
@@ -352,7 +187,6 @@ function checkPw() {
   <h1>Generator</h1>
   <p class="subtitle">Before / After 画像をアップロードするだけで、あなたのプリセット専用の試着ページを生成します。<br>3〜5 ペアの画像で精度が上がります。</p>
 
-  <!-- Step 1: Preset Info -->
   <div class="section">
     <p class="section-label">01 — Preset Info</p>
     <div style="display:flex;flex-direction:column;gap:10px;">
@@ -371,7 +205,6 @@ function checkPw() {
 
   <div class="divider"></div>
 
-  <!-- Step 2: Before/After Pairs -->
   <div class="section">
     <p class="section-label">02 — Before / After ペア</p>
     <div class="pairs-container" id="pairsContainer"></div>
@@ -380,7 +213,6 @@ function checkPw() {
 
   <div class="divider"></div>
 
-  <!-- Generate -->
   <button class="generate-btn" id="generateBtn">ページを生成する</button>
 
   <div class="progress" id="progressEl">
@@ -400,15 +232,13 @@ function checkPw() {
 <canvas id="canvas"></canvas>
 
 <script>
-// ── Pair management ──
 let pairCount = 0;
-const pairs = []; // { id, before: ImageData|null, after: ImageData|null }
+const pairs = [];
 
 function addPair() {
   pairCount++;
   const id = pairCount;
   pairs.push({ id, before: null, after: null });
-
   const div = document.createElement('div');
   div.className = 'pair';
   div.id = `pair-${id}`;
@@ -448,25 +278,19 @@ function loadImage(event, id, type) {
   reader.onload = e => {
     const img = new Image();
     img.onload = () => {
-      // Draw to canvas to get ImageData
       const canvas = document.getElementById('canvas');
-      // Downsample for speed: max 400px wide
       const scale = Math.min(1, 400 / img.width);
       canvas.width  = Math.round(img.width  * scale);
       canvas.height = Math.round(img.height * scale);
       const ctx = canvas.getContext('2d');
       ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
       const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-
       const pair = pairs.find(p => p.id === id);
       if (pair) pair[type] = imageData;
-
-      // Show preview
       const preview = document.getElementById(`${type}-preview-${id}`);
       preview.src = e.target.result;
       preview.style.display = 'block';
       document.getElementById(`${type}-box-${id}`).classList.add('loaded');
-
       updatePairStatus(id);
     };
     img.src = e.target.result;
@@ -487,45 +311,27 @@ function updatePairStatus(id) {
 }
 
 document.getElementById('addPairBtn').addEventListener('click', addPair);
-addPair(); // 初期表示
+addPair();
 
-// ── LUT calculation ──
 function computeLUTFromPairs(validPairs) {
-  // For each channel, collect (before_val → after_val) mappings
-  // Then average deltas per bucket and build smooth LUT
-  const buckets = 17; // 16 intervals = 17 points (0,16,32,...,255)
-  const redSum   = new Float32Array(buckets);
-  const greenSum = new Float32Array(buckets);
-  const blueSum  = new Float32Array(buckets);
-  const redCount   = new Int32Array(buckets);
-  const greenCount = new Int32Array(buckets);
-  const blueCount  = new Int32Array(buckets);
+  const buckets = 17;
+  const redSum = new Float32Array(buckets), greenSum = new Float32Array(buckets), blueSum = new Float32Array(buckets);
+  const redCount = new Int32Array(buckets), greenCount = new Int32Array(buckets), blueCount = new Int32Array(buckets);
 
   for (const pair of validPairs) {
-    const bd = pair.before.data;
-    const ad = pair.after.data;
+    const bd = pair.before.data, ad = pair.after.data;
     const len = Math.min(bd.length, ad.length);
-
-    for (let i = 0; i < len; i += 16) { // 4ピクセルおきにサンプリング
+    for (let i = 0; i < len; i += 16) {
       const br = bd[i], bg = bd[i+1], bb = bd[i+2];
       const ar = ad[i], ag = ad[i+1], ab = ad[i+2];
-
-      // Bucket index: which of the 17 points this pixel is closest to
-      const ri = Math.round(br / 16);
-      const gi = Math.round(bg / 16);
-      const bi = Math.round(bb / 16);
-
-      redSum[ri]   += ar; redCount[ri]++;
+      const ri = Math.round(br / 16), gi = Math.round(bg / 16), bi = Math.round(bb / 16);
+      redSum[ri] += ar; redCount[ri]++;
       greenSum[gi] += ag; greenCount[gi]++;
-      blueSum[bi]  += ab; blueCount[bi]++;
+      blueSum[bi] += ab; blueCount[bi]++;
     }
   }
 
-  // Build curve control points
-  const redCurve   = [];
-  const greenCurve = [];
-  const blueCurve  = [];
-
+  const redCurve = [], greenCurve = [], blueCurve = [];
   for (let i = 0; i < buckets; i++) {
     const x = i * 16;
     const r = redCount[i]   > 0 ? Math.round(redSum[i]   / redCount[i])   : x;
@@ -535,19 +341,13 @@ function computeLUTFromPairs(validPairs) {
     greenCurve.push([x, Math.max(0, Math.min(255, g))]);
     blueCurve.push([x, Math.max(0, Math.min(255, b))]);
   }
-
-  // Fix endpoints
-  redCurve[0]   = [0,   redCurve[0][1]];
-  redCurve[16]  = [255, redCurve[16][1]];
-  greenCurve[0] = [0,   greenCurve[0][1]];
-  greenCurve[16]= [255, greenCurve[16][1]];
-  blueCurve[0]  = [0,   blueCurve[0][1]];
-  blueCurve[16] = [255, blueCurve[16][1]];
+  redCurve[0] = [0, redCurve[0][1]]; redCurve[16] = [255, redCurve[16][1]];
+  greenCurve[0] = [0, greenCurve[0][1]]; greenCurve[16] = [255, greenCurve[16][1]];
+  blueCurve[0] = [0, blueCurve[0][1]]; blueCurve[16] = [255, blueCurve[16][1]];
 
   return { red: redCurve, green: greenCurve, blue: blueCurve };
 }
 
-// ── Generate page ──
 document.getElementById('username').addEventListener('input', function() {
   const slug = this.value.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
   document.getElementById('usernamePreview').textContent = slug || 'username';
@@ -567,7 +367,6 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
   const validPairs = pairs.filter(p => p.before && p.after);
   if (validPairs.length < 1) { alert('Before/After ペアを少なくとも1組アップロードしてください'); return; }
 
-  // Show progress
   const progressEl = document.getElementById('progressEl');
   const progressBar = document.getElementById('progressBar');
   const progressLabel = document.getElementById('progressLabel');
@@ -578,20 +377,19 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
   progressLabel.textContent = `${validPairs.length}ペアの画像からLUTを計算中...`;
   progressBar.style.width = '30%';
 
-  await new Promise(r => setTimeout(r, 50)); // let UI update
+  await new Promise(r => setTimeout(r, 50));
 
   let curves;
   const genTimeout = setTimeout(() => {
     progressLabel.textContent = '処理に時間がかかっています。画像サイズを小さくしてお試しください。';
     progressBar.style.width = '0%';
     document.getElementById('generateBtn').disabled = false;
-  }, 30000); // 30秒タイムアウト
+  }, 30000);
 
   try {
     curves = computeLUTFromPairs(validPairs);
     progressBar.style.width = '70%';
     progressLabel.textContent = 'ページを生成中...';
-
     await new Promise(r => setTimeout(r, 50));
 
     const html = generateHTML({ presetName, sellerName, purchaseUrl, presetDesc, gaId, curves, pairCount: validPairs.length });
@@ -599,61 +397,54 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
     progressBar.style.width = '100%';
     progressLabel.textContent = '完了';
 
-  // Create download
-  const blob = new Blob([html], { type: 'text/html' });
-  const url = URL.createObjectURL(blob);
-  const userSlug   = username.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
-  const presetSlug = presetName.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
-  const filename = `index.html`;
-  const uploadPath = `sellers/${userSlug}/${presetSlug}/index.html`;
+    const blob = new Blob([html], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const userSlug   = username.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+    const presetSlug = presetName.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+    const uploadPath = `sellers/${userSlug}/${presetSlug}/index.html`;
 
+    document.getElementById('resultDesc').textContent = `「${presetName}」の試着ページが生成されました。`;
 
-  document.getElementById('resultDesc').textContent =
-    `「${presetName}」の試着ページが生成されました。`;
+    const publishBtn = document.getElementById('publishBtn');
+    publishBtn.onclick = async () => {
+      const status = document.getElementById('publishStatus');
+      const urlEl  = document.getElementById('publishUrl');
+      publishBtn.disabled = true;
+      status.textContent = '公開中...';
+      urlEl.textContent = '';
 
-  // 公開ボタンの設定
-  const publishBtn = document.getElementById('publishBtn');
-  publishBtn.onclick = async () => {
-    const status = document.getElementById('publishStatus');
-    const urlEl  = document.getElementById('publishUrl');
-    publishBtn.disabled = true;
-    status.textContent = '公開中...';
-    urlEl.textContent = '';
+      const controller = new AbortController();
+      const timeout = setTimeout(() => { controller.abort(); }, 20000);
 
-    const controller = new AbortController();
-    const timeout = setTimeout(() => {
-      controller.abort();
-    }, 20000); // 20秒タイムアウト
-
-    try {
-      const res = await fetch('https://presetry-push.pickn-photograph001.workers.dev', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: userSlug, presetSlug, html }),
-        signal: controller.signal,
-      });
-      clearTimeout(timeout);
-      const data = await res.json();
-      if (data.success) {
-        status.textContent = '公開処理が完了しました。URLを準備中...';
-        setTimeout(() => {
-          status.textContent = '公開完了！';
-          urlEl.innerHTML = `<a href="${data.url}" target="_blank" style="color:var(--accent);text-decoration:underline;">${data.url}</a><br><span style="font-size:11px;color:var(--mid);letter-spacing:0.05em;">※ アクセスできない場合は少し時間をおいてお試しください。</span>`;
-        }, 30000);
-      } else {
-        status.textContent = `エラー: ${data.error}`;
+      try {
+        const res = await fetch('https://presetry-push.pickn-photograph001.workers.dev', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username: userSlug, presetSlug, html }),
+          signal: controller.signal,
+        });
+        clearTimeout(timeout);
+        const data = await res.json();
+        if (data.success) {
+          status.textContent = '公開処理が完了しました。URLを準備中...';
+          setTimeout(() => {
+            status.textContent = '公開完了！';
+            urlEl.innerHTML = `<a href="${data.url}" target="_blank" style="color:var(--accent);text-decoration:underline;">${data.url}</a><br><span style="font-size:11px;color:var(--mid);letter-spacing:0.05em;">※ アクセスできない場合は少し時間をおいてお試しください。</span>`;
+          }, 30000);
+        } else {
+          status.textContent = `エラー: ${data.error}`;
+          publishBtn.disabled = false;
+        }
+      } catch (e) {
+        clearTimeout(timeout);
+        if (e.name === 'AbortError') {
+          status.textContent = 'タイムアウトしました。時間をおいて再度お試しください。';
+        } else {
+          status.textContent = 'ネットワークエラーが発生しました';
+        }
         publishBtn.disabled = false;
       }
-    } catch (e) {
-      clearTimeout(timeout);
-      if (e.name === 'AbortError') {
-        status.textContent = 'タイムアウトしました。時間をおいて再度お試しください。';
-      } else {
-        status.textContent = 'ネットワークエラーが発生しました';
-      }
-      publishBtn.disabled = false;
-    }
-  };
+    };
 
     document.getElementById('resultEl').classList.add('visible');
     document.getElementById('generateBtn').disabled = false;
@@ -694,6 +485,9 @@ function generateHTML({ presetName, sellerName, purchaseUrl, presetDesc, gaId, c
   const greenCurve = JSON.stringify(curves.green);
   const blueCurve  = JSON.stringify(curves.blue);
 
+  // 修正3: 生成されるHTMLテンプレートも修正
+  // - @importを廃止しpreconnect + link タグに統合
+  // - .heroのopacity:0 → opacity:1（bothキーワード使用）
   return `<!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -702,7 +496,10 @@ function generateHTML({ presetName, sellerName, purchaseUrl, presetDesc, gaId, c
 <link rel="icon" type="image/svg+xml" href="../../../favicon.svg">
 ${gaScript}
 <title>${presetName} — Presetry</title>
-<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Noto+Sans+JP:wght@300;400&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://use.typekit.net" crossorigin>
 <script>
   (function(d) {
     var config = {
@@ -714,7 +511,6 @@ ${gaScript}
   })(document);
 <\/script>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400&display=swap');
   :root {
     --base:    #FCFCFC;
     --accent:  #3E7E9A;
@@ -724,11 +520,8 @@ ${gaScript}
     --ink:     #1e2c33;
     --ink-dim: #4a6370;
   }
-
   * { margin: 0; padding: 0; box-sizing: border-box; }
-
   html { scroll-behavior: smooth; }
-
   body {
     font-family: fot-tsukuardgothic-std, 'Noto Sans JP', sans-serif;
     font-weight: 400;
@@ -737,8 +530,6 @@ ${gaScript}
     min-height: 100vh;
     overflow-x: hidden;
   }
-
-  /* Subtle noise texture overlay */
   body::after {
     content: '';
     position: fixed;
@@ -748,8 +539,6 @@ ${gaScript}
     z-index: 100;
     opacity: 0.5;
   }
-
-  /* Atmospheric gradient */
   body::before {
     content: '';
     position: fixed;
@@ -760,547 +549,148 @@ ${gaScript}
     pointer-events: none;
     z-index: 0;
   }
-
-  .wrap {
-    position: relative;
-    z-index: 1;
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 0 32px;
-  }
-
-  /* ── Header ── */
-  header {
-    padding: 52px 0 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    border-bottom: 1px solid var(--light1);
-    padding-bottom: 20px;
-  }
-
-  .wordmark {
-    font-family: fot-tsukuardgothic-std, 'Noto Sans JP', sans-serif;
-    font-size: 13px;
-    letter-spacing: 0.35em;
-    text-transform: uppercase;
-    color: var(--ink-dim);
-    font-weight: 400;
-  }
-
-  .tag {
-    font-size: 10px;
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    color: var(--light2);
-    font-family: fot-tsukuardgothic-std, 'Noto Sans JP', sans-serif;
-  }
-
-  /* ── Hero ── */
-  .hero {
-    padding: 72px 0 64px;
-    opacity: 0;
-    animation: rise 1.2s cubic-bezier(0.16,1,0.3,1) 0.1s forwards;
-  }
-
-  .hero-en {
-    font-family: fot-tsukuardgothic-std, 'Noto Sans JP', sans-serif;
-    font-size: clamp(28px, 5.5vw, 52px);
-    font-weight: 400;
-    line-height: 1.4;
-    letter-spacing: 0.05em;
-    color: var(--ink-dim);
-    display: block;
-    margin-bottom: 20px;
-  }
-
-  .preset-chip {
-    display: inline-block;
-    font-size: 9px;
-    letter-spacing: 0.2em;
-    color: var(--accent);
-    border: 1px solid rgba(62,126,154,0.3);
-    padding: 5px 12px;
-    margin-bottom: 28px;
-    font-family: fot-tsukuardgothic-std, 'Noto Sans JP', sans-serif;
-  }
-
-
-  .hero-desc {
-    font-size: 12px;
-    color: var(--ink-dim);
-    letter-spacing: 0.10em;
-    line-height: 2.2;
-    max-width: 340px;
-    font-weight: 300;
-  }
-
-  /* ── Rule ── */
-  .rule {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    margin-bottom: 32px;
-    opacity: 0;
-    animation: rise 1s cubic-bezier(0.16,1,0.3,1) 0.25s forwards;
-  }
-
-  .rule-line {
-    flex: 1;
-    height: 1px;
-    background: var(--light1);
-  }
-
-  .rule-text {
-    font-size: 9px;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    color: var(--light2);
-    font-family: fot-tsukuardgothic-std, 'Noto Sans JP', sans-serif;
-    white-space: nowrap;
-  }
-
-  /* ── Upload ── */
-  .upload-zone {
-    border: 1px solid var(--light1);
-    padding: 60px 24px;
-    text-align: center;
-    cursor: pointer;
-    transition: border-color 0.4s ease, background 0.4s ease;
-    background: rgba(152,182,190,0.04);
-    position: relative;
-    overflow: hidden;
-    margin-bottom: 56px;
-    opacity: 0;
-    animation: rise 1s cubic-bezier(0.16,1,0.3,1) 0.35s forwards;
-  }
-
-  .upload-zone:hover,
-  .upload-zone.drag-over {
-    border-color: var(--light2);
-    background: rgba(62,126,154,0.04);
-  }
-
-  .upload-zone input {
-    position: absolute;
-    inset: 0;
-    opacity: 0;
-    cursor: pointer;
-  }
-
-  .upload-icon {
-    margin: 0 auto 20px;
-    width: 36px;
-    height: 36px;
-    color: var(--light2);
-    opacity: 0.6;
-  }
-
-  .upload-main {
-    font-family: fot-tsukuardgothic-std, 'Noto Sans JP', sans-serif;
-    font-size: 14px;
-    letter-spacing: 0.3em;
-    color: var(--ink-dim);
-    display: block;
-    margin-bottom: 10px;
-  }
-
-  .upload-sub {
-    font-size: 10px;
-    letter-spacing: 0.2em;
-    color: var(--light2);
-    text-transform: uppercase;
-    font-family: fot-tsukuardgothic-std, 'Noto Sans JP', sans-serif;
-  }
-
-  .upload-note {
-    display: block;
-    margin-top: 16px;
-    font-size: 10px;
-    color: rgba(115,160,177,0.6);
-    letter-spacing: 0.08em;
-    line-height: 1.9;
-  }
-
-  /* ── Viewer ── */
+  .wrap { position: relative; z-index: 1; max-width: 800px; margin: 0 auto; padding: 0 32px; }
+  header { padding: 52px 0 0; display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px solid var(--light1); padding-bottom: 20px; }
+  .wordmark { font-family: fot-tsukuardgothic-std, 'Noto Sans JP', sans-serif; font-size: 13px; letter-spacing: 0.35em; text-transform: uppercase; color: var(--ink-dim); font-weight: 400; }
+  .tag { font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--light2); font-family: fot-tsukuardgothic-std, 'Noto Sans JP', sans-serif; }
+  .hero { padding: 72px 0 64px; opacity: 1; animation: rise 1.2s cubic-bezier(0.16,1,0.3,1) 0.1s both; }
+  .hero-en { font-family: fot-tsukuardgothic-std, 'Noto Sans JP', sans-serif; font-size: clamp(28px, 5.5vw, 52px); font-weight: 400; line-height: 1.4; letter-spacing: 0.05em; color: var(--ink-dim); display: block; margin-bottom: 20px; }
+  .preset-chip { display: inline-block; font-size: 9px; letter-spacing: 0.2em; color: var(--accent); border: 1px solid rgba(62,126,154,0.3); padding: 5px 12px; margin-bottom: 28px; font-family: fot-tsukuardgothic-std, 'Noto Sans JP', sans-serif; }
+  .hero-desc { font-size: 12px; color: var(--ink-dim); letter-spacing: 0.10em; line-height: 2.2; max-width: 340px; font-weight: 300; }
+  .rule { display: flex; align-items: center; gap: 16px; margin-bottom: 32px; opacity: 0; animation: rise 1s cubic-bezier(0.16,1,0.3,1) 0.25s forwards; }
+  .rule-line { flex: 1; height: 1px; background: var(--light1); }
+  .rule-text { font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--light2); font-family: fot-tsukuardgothic-std, 'Noto Sans JP', sans-serif; white-space: nowrap; }
+  .upload-zone { border: 1px solid var(--light1); padding: 60px 24px; text-align: center; cursor: pointer; transition: border-color 0.4s ease, background 0.4s ease; background: rgba(152,182,190,0.04); position: relative; overflow: hidden; margin-bottom: 56px; opacity: 0; animation: rise 1s cubic-bezier(0.16,1,0.3,1) 0.35s forwards; }
+  .upload-zone:hover, .upload-zone.drag-over { border-color: var(--light2); background: rgba(62,126,154,0.04); }
+  .upload-zone input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+  .upload-icon { margin: 0 auto 20px; width: 36px; height: 36px; color: var(--light2); opacity: 0.6; }
+  .upload-main { font-family: fot-tsukuardgothic-std, 'Noto Sans JP', sans-serif; font-size: 14px; letter-spacing: 0.3em; color: var(--ink-dim); display: block; margin-bottom: 10px; }
+  .upload-sub { font-size: 10px; letter-spacing: 0.2em; color: var(--light2); text-transform: uppercase; font-family: fot-tsukuardgothic-std, 'Noto Sans JP', sans-serif; }
+  .upload-note { display: block; margin-top: 16px; font-size: 10px; color: rgba(115,160,177,0.6); letter-spacing: 0.08em; line-height: 1.9; }
   .viewer { display: none; margin-bottom: 56px; }
   .viewer.active { display: block; }
-
-  .viewer-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 14px;
-  }
-
-  .viewer-head-label {
-    font-size: 9px;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    color: var(--light2);
-    font-family: fot-tsukuardgothic-std, 'Noto Sans JP', sans-serif;
-  }
-
-  .reset-btn {
-    font-size: 9px;
-    letter-spacing: 0.2em;
-    color: var(--light2);
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-family: fot-tsukuardgothic-std, 'Noto Sans JP', sans-serif;
-    text-transform: uppercase;
-    text-decoration: underline;
-    text-underline-offset: 3px;
-    transition: color 0.3s;
-  }
-
+  .viewer-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+  .viewer-head-label { font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--light2); font-family: fot-tsukuardgothic-std, 'Noto Sans JP', sans-serif; }
+  .reset-btn { font-size: 9px; letter-spacing: 0.2em; color: var(--light2); background: none; border: none; cursor: pointer; font-family: fot-tsukuardgothic-std, 'Noto Sans JP', sans-serif; text-transform: uppercase; text-decoration: underline; text-underline-offset: 3px; transition: color 0.3s; }
   .reset-btn:hover { color: var(--accent); }
-
-  .comparison-wrap {
-    position: relative;
-    overflow: hidden;
-    user-select: none;
-    cursor: ew-resize;
-    aspect-ratio: 3/2;
-    background: var(--light1);
-  }
-
-  .comparison-wrap img {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-
+  .comparison-wrap { position: relative; overflow: hidden; user-select: none; cursor: ew-resize; aspect-ratio: 3/2; background: var(--light1); }
+  .comparison-wrap img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
   .img-after { clip-path: inset(0 50% 0 0); }
-
-  .slider-line {
-    position: absolute;
-    top: 0; bottom: 0;
-    left: 50%;
-    width: 1px;
-    background: rgba(252,252,252,0.7);
-    transform: translateX(-50%);
-    pointer-events: none;
-  }
-
-  .slider-handle {
-    position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    width: 32px; height: 32px;
-    border: 1px solid rgba(252,252,252,0.6);
-    background: rgba(62,126,154,0.6);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    pointer-events: none;
-    backdrop-filter: blur(4px);
-  }
-
-  .slider-handle svg {
-    width: 12px; height: 12px;
-    color: var(--base);
-  }
-
-  .label-before,
-  .label-after {
-    position: absolute;
-    bottom: 14px;
-    font-size: 8px;
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    font-family: fot-tsukuardgothic-std, 'Noto Sans JP', sans-serif;
-    color: rgba(252,252,252,0.6);
-    pointer-events: none;
-  }
-
+  .slider-line { position: absolute; top: 0; bottom: 0; left: 50%; width: 1px; background: rgba(252,252,252,0.7); transform: translateX(-50%); pointer-events: none; }
+  .slider-handle { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 32px; height: 32px; border: 1px solid rgba(252,252,252,0.6); background: rgba(62,126,154,0.6); display: flex; align-items: center; justify-content: center; pointer-events: none; backdrop-filter: blur(4px); }
+  .slider-handle svg { width: 12px; height: 12px; color: var(--base); }
+  .label-before, .label-after { position: absolute; bottom: 14px; font-size: 8px; letter-spacing: 0.25em; text-transform: uppercase; font-family: fot-tsukuardgothic-std, 'Noto Sans JP', sans-serif; color: rgba(252,252,252,0.6); pointer-events: none; }
   .label-before { left: 14px; }
   .label-after  { right: 14px; }
-
   #processingCanvas { display: none; }
-
-  /* ── Controls ── */
   .controls { margin-top: 20px; }
-
-  .control-group label {
-    display: block;
-    font-size: 9px;
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    color: var(--light2);
-    font-family: fot-tsukuardgothic-std, 'Noto Sans JP', sans-serif;
-    margin-bottom: 10px;
-  }
-
-  .control-group input[type=range] {
-    width: 100%;
-    -webkit-appearance: none;
-    height: 1px;
-    background: var(--light1);
-    outline: none;
-    cursor: pointer;
-  }
-
-  .control-group input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 10px; height: 10px;
-    border-radius: 50%;
-    background: var(--accent);
-    cursor: pointer;
-  }
-
-  .intensity-val {
-    font-size: 10px;
-    color: var(--light2);
-    text-align: right;
-    margin-top: 6px;
-    font-family: fot-tsukuardgothic-std, 'Noto Sans JP', sans-serif;
-    letter-spacing: 0.1em;
-  }
-
-  /* ── CTA ── */
-  .cta-section {
-    border-top: 1px solid var(--light1);
-    padding: 52px 0 48px;
-    display: grid;
-    grid-template-columns: 1fr auto;
-    align-items: end;
-    gap: 32px;
-  }
-
-  .cta-preset-name {
-    font-family: fot-tsukuardgothic-std, 'Noto Sans JP', sans-serif;
-    font-size: 32px;
-
-    font-weight: 400;
-    color: var(--accent);
-    letter-spacing: 0.02em;
-    display: block;
-    margin-bottom: 10px;
-  }
-
-  .cta-meta {
-    font-size: 11px;
-    letter-spacing: 0.15em;
-    color: var(--ink-dim);
-    font-weight: 300;
-    line-height: 2;
-  }
-
-  .cta-btn {
-    display: inline-flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-    border: 1px solid var(--accent);
-    color: var(--accent);
-    padding: 16px 36px;
-    text-decoration: none;
-    font-family: fot-tsukuardgothic-std, 'Noto Sans JP', sans-serif;
-    font-size: 12px;
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    transition: all 0.4s ease;
-    white-space: nowrap;
-    background: transparent;
-  }
-
-  .cta-btn:hover {
-    background: var(--accent);
-    color: var(--base);
-  }
-
-  .cta-btn:hover .cta-price {
-    color: rgba(252,252,252,0.6);
-  }
-
-  .cta-price {
-    font-size: 10px;
-    color: var(--light2);
-    letter-spacing: 0.15em;
-    transition: color 0.4s;
-  }
-
-  /* ── Footer ── */
-  footer {
-    padding: 28px 0 48px;
-    display: flex;
-    justify-content: space-between;
-    border-top: 1px solid var(--light1);
-  }
-
-  footer p {
-    font-size: 9px;
-    letter-spacing: 0.2em;
-    color: var(--light1);
-    font-family: fot-tsukuardgothic-std, 'Noto Sans JP', sans-serif;
-    text-transform: uppercase;
-  }
-
-  .disclaimer {
-    margin-top: 14px;
-    font-size: 10px;
-    color: rgba(115,160,177,0.5);
-    letter-spacing: 0.08em;
-    line-height: 1.8;
-  }
-  @keyframes rise {
-    from { opacity: 0; transform: translateY(14px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  /* ── Responsive ── */
+  .control-group label { display: block; font-size: 9px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--light2); font-family: fot-tsukuardgothic-std, 'Noto Sans JP', sans-serif; margin-bottom: 10px; }
+  .control-group input[type=range] { width: 100%; -webkit-appearance: none; height: 1px; background: var(--light1); outline: none; cursor: pointer; }
+  .control-group input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); cursor: pointer; }
+  .intensity-val { font-size: 10px; color: var(--light2); text-align: right; margin-top: 6px; font-family: fot-tsukuardgothic-std, 'Noto Sans JP', sans-serif; letter-spacing: 0.1em; }
+  .cta-section { border-top: 1px solid var(--light1); padding: 52px 0 48px; display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 32px; }
+  .cta-meta { font-size: 11px; letter-spacing: 0.15em; color: var(--ink-dim); font-weight: 300; line-height: 2; }
+  .cta-btn { display: inline-flex; flex-direction: column; align-items: center; gap: 4px; border: 1px solid var(--accent); color: var(--accent); padding: 16px 36px; text-decoration: none; font-family: fot-tsukuardgothic-std, 'Noto Sans JP', sans-serif; font-size: 12px; letter-spacing: 0.25em; text-transform: uppercase; transition: all 0.4s ease; white-space: nowrap; background: transparent; }
+  .cta-btn:hover { background: var(--accent); color: var(--base); }
+  .cta-btn:hover .cta-price { color: rgba(252,252,252,0.6); }
+  .cta-price { font-size: 10px; color: var(--light2); letter-spacing: 0.15em; transition: color 0.4s; }
+  footer { padding: 28px 0 48px; display: flex; justify-content: space-between; border-top: 1px solid var(--light1); }
+  footer p { font-size: 9px; letter-spacing: 0.2em; color: var(--light1); font-family: fot-tsukuardgothic-std, 'Noto Sans JP', sans-serif; text-transform: uppercase; }
+  .disclaimer { margin-top: 14px; font-size: 10px; color: rgba(115,160,177,0.5); letter-spacing: 0.08em; line-height: 1.8; }
+  @keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
   @media (max-width: 600px) {
-    .wrap {
-      padding: 0 20px;
-    }
-    header {
-      padding: 28px 0 14px;
-    }
-    .hero {
-      padding: 40px 0 32px;
-    }
-    .rule {
-      margin-bottom: 20px;
-    }
-    .upload-zone {
-      padding: 40px 16px;
-      margin-bottom: 36px;
-    }
-    .upload-note {
-      font-size: 9px;
-    }
-    .viewer {
-      margin-bottom: 36px;
-    }
-    .cta-section {
-      grid-template-columns: 1fr;
-      padding: 32px 0 28px;
-      gap: 20px;
-    }
-    .cta-btn {
-      width: 100%;
-      justify-content: center;
-      padding: 16px 20px;
-      box-sizing: border-box;
-    }
-    footer {
-      flex-direction: column;
-      gap: 6px;
-      padding: 18px 0 32px;
-    }
-    .disclaimer {
-      font-size: 9px;
-    }
+    .wrap { padding: 0 20px; }
+    header { padding: 28px 0 14px; }
+    .hero { padding: 40px 0 32px; }
+    .rule { margin-bottom: 20px; }
+    .upload-zone { padding: 40px 16px; margin-bottom: 36px; }
+    .upload-note { font-size: 9px; }
+    .viewer { margin-bottom: 36px; }
+    .cta-section { grid-template-columns: 1fr; padding: 32px 0 28px; gap: 20px; }
+    .cta-btn { width: 100%; justify-content: center; padding: 16px 20px; box-sizing: border-box; }
+    footer { flex-direction: column; gap: 6px; padding: 18px 0 32px; }
+    .disclaimer { font-size: 9px; }
   }
-</style>
-</head>
+<\/style>
+<\/head>
 <body>
 <div class="wrap">
-
   <header>
-    <span class="wordmark">Presetry</span>
-    <span class="tag">Preset Trial</span>
-  </header>
-
+    <span class="wordmark">Presetry<\/span>
+    <span class="tag">Preset Trial<\/span>
+  <\/header>
   <section class="hero">
-    <span class="hero-en">あなたの写真で、<br>試してみてください。</span>
-    <span class="preset-chip">Now playing — ${presetName}${sellerTag}</span>
-    <p class="hero-desc">写真をアップロードして、<br>このプリセットの世界観を体感してください。</p>
-  </section>
-
+    <span class="hero-en">あなたの写真で、<br>試してみてください。<\/span>
+    <span class="preset-chip">Now playing — ${presetName}${sellerTag}<\/span>
+    <p class="hero-desc">写真をアップロードして、<br>このプリセットの世界観を体感してください。<\/p>
+  <\/section>
   <div class="rule">
-    <div class="rule-line"></div>
-    <span class="rule-text">Upload your photo</span>
-    <div class="rule-line"></div>
-  </div>
-
+    <div class="rule-line"><\/div>
+    <span class="rule-text">Upload your photo<\/span>
+    <div class="rule-line"><\/div>
+  <\/div>
   <div class="upload-zone" id="uploadZone">
     <svg class="upload-icon" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="4" y="9" width="28" height="20" rx="1" stroke="currentColor" stroke-width="1"/>
-      <circle cx="13" cy="17" r="3" stroke="currentColor" stroke-width="1"/>
-      <path d="M4 24l9-7 7 5 5-3 7 5" stroke="currentColor" stroke-width="1" stroke-linejoin="round"/>
-    </svg>
-    <span class="upload-main">写真をドロップ</span>
-    <span class="upload-sub">JPG, PNG 対応 &nbsp;/&nbsp; RAW非対応</span>
-    <span class="upload-note">RAWファイル（ARW, CR3, NEF等）はブラウザの仕様上表示できません。<br>LightroomやFinderでJPEGに書き出してからお試しください。</span>
-    <input type="file" accept="image/*" id="fileInput">
-  </div>
-
-  <canvas id="processingCanvas"></canvas>
-
+      <rect x="4" y="9" width="28" height="20" rx="1" stroke="currentColor" stroke-width="1"\/>
+      <circle cx="13" cy="17" r="3" stroke="currentColor" stroke-width="1"\/>
+      <path d="M4 24l9-7 7 5 5-3 7 5" stroke="currentColor" stroke-width="1" stroke-linejoin="round"\/>
+    <\/svg>
+    <span class="upload-main">写真をドロップ<\/span>
+    <span class="upload-sub">JPG, PNG 対応 &nbsp;\/&nbsp; RAW非対応<\/span>
+    <span class="upload-note">RAWファイル（ARW, CR3, NEF等）はブラウザの仕様上表示できません。<br>LightroomやFinderでJPEGに書き出してからお試しください。<\/span>
+    <input type="file" accept="image\/*" id="fileInput">
+  <\/div>
+  <canvas id="processingCanvas"><\/canvas>
   <div class="viewer" id="viewer">
     <div class="viewer-head">
-      <span class="viewer-head-label">Before / After</span>
-      <button class="reset-btn" id="resetBtn">別の写真を使う</button>
-    </div>
-
+      <span class="viewer-head-label">Before \/ After<\/span>
+      <button class="reset-btn" id="resetBtn">別の写真を使う<\/button>
+    <\/div>
     <div class="comparison-wrap" id="comparisonWrap">
       <img id="imgBefore" src="" alt="Before">
       <img id="imgAfter" src="" alt="After">
-      <div class="slider-line" id="sliderLine"></div>
+      <div class="slider-line" id="sliderLine"><\/div>
       <div class="slider-handle" id="sliderHandle">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <path d="M8 9l-4 3 4 3M16 9l4 3-4 3"/>
-        </svg>
-      </div>
-      <div class="label-before">Before</div>
-      <div class="label-after">After</div>
-    </div>
-
+          <path d="M8 9l-4 3 4 3M16 9l4 3-4 3"\/>
+        <\/svg>
+      <\/div>
+      <div class="label-before">Before<\/div>
+      <div class="label-after">After<\/div>
+    <\/div>
     <div class="controls">
       <div class="control-group">
-        <label>Intensity</label>
+        <label>Intensity<\/label>
         <input type="range" id="intensitySlider" min="0" max="100" value="100">
-        <div class="intensity-val" id="intensityLabel">100</div>
-      </div>
-    </div>
-    <p class="disclaimer">※ これはブラウザ上でのシミュレーションです。実際のLightroom処理とは色・階調が異なります。</p>
-  </div>
-
+        <div class="intensity-val" id="intensityLabel">100<\/div>
+      <\/div>
+    <\/div>
+    <p class="disclaimer">※ これはブラウザ上でのシミュレーションです。実際のLightroom処理とは色・階調が異なります。<\/p>
+  <\/div>
 ${purchaseSection}
-
   <footer>
-    <p>presetry — preset trial experience</p>
-    <p>© 2026 ${sellerName}</p>
-  </footer>
-
-</div>
-
+    <p>presetry — preset trial experience<\/p>
+    <p>© 2026 ${sellerName}<\/p>
+  <\/footer>
+<\/div>
 <script>
-  // LUT curves (auto-generated)
   const curves = { red: ${redCurve}, green: ${greenCurve}, blue: ${blueCurve} };
-
-  // Build LUT from curve control points using linear interpolation
   function buildLUT(points) {
     const lut = new Uint8Array(256);
     for (let x = 0; x < 256; x++) {
-      // Clamp to endpoints
       if (x <= points[0][0]) { lut[x] = points[0][1]; continue; }
       if (x >= points[points.length-1][0]) { lut[x] = points[points.length-1][1]; continue; }
-      // Find segment
       let i = 0;
       while (i < points.length - 2 && points[i+1][0] <= x) i++;
       const x0 = points[i][0], y0 = points[i][1];
       const x1 = points[i+1][0], y1 = points[i+1][1];
-      const t = (x - x0) / (x1 - x0);
+      const t = (x - x0) \/ (x1 - x0);
       lut[x] = Math.max(0, Math.min(255, Math.round(y0 + t * (y1 - y0))));
     }
     return lut;
   }
-
-  const redLUT   = buildLUT(curves.red);
-  const greenLUT = buildLUT(curves.green);
-  const blueLUT  = buildLUT(curves.blue);
-
-  let originalImageData = null;
-  let sliderPos = 50;
-  let isDragging = false;
-
+  const redLUT = buildLUT(curves.red), greenLUT = buildLUT(curves.green), blueLUT = buildLUT(curves.blue);
+  let originalImageData = null, sliderPos = 50, isDragging = false;
   const uploadZone = document.getElementById('uploadZone');
   const fileInput = document.getElementById('fileInput');
   const viewer = document.getElementById('viewer');
@@ -1314,38 +704,25 @@ ${purchaseSection}
   const intensityLabel = document.getElementById('intensityLabel');
   const canvas = document.getElementById('processingCanvas');
   const ctx = canvas.getContext('2d');
-
-  // Upload handlers
   uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('drag-over'); });
   uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag-over'));
   uploadZone.addEventListener('drop', e => {
-    e.preventDefault();
-    uploadZone.classList.remove('drag-over');
+    e.preventDefault(); uploadZone.classList.remove('drag-over');
     const file = e.dataTransfer.files[0];
-    if (file && file.type.startsWith('image/')) processFile(file);
+    if (file && file.type.startsWith('image\/')) processFile(file);
   });
-  fileInput.addEventListener('change', e => {
-    if (e.target.files[0]) processFile(e.target.files[0]);
-  });
-
+  fileInput.addEventListener('change', e => { if (e.target.files[0]) processFile(e.target.files[0]); });
   function processFile(file) {
     const reader = new FileReader();
     reader.onload = e => {
       const img = new Image();
       img.onload = () => {
-        // Set canvas size
-        const maxW = 1200;
-        const scale = Math.min(1, maxW / img.width);
-        canvas.width = img.width * scale;
-        canvas.height = img.height * scale;
+        const maxW = 1200, scale = Math.min(1, maxW \/ img.width);
+        canvas.width = img.width * scale; canvas.height = img.height * scale;
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
         originalImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-
-        // Before = original (save before any processing)
         imgBefore.src = canvas.toDataURL();
-        // After = preset applied
         applyPreset(100);
-
         uploadZone.style.display = 'none';
         viewer.classList.add('active');
         updateSlider(50);
@@ -1354,137 +731,42 @@ ${purchaseSection}
     };
     reader.readAsDataURL(file);
   }
-
-  // RGB to HSL
-  function rgbToHsl(r, g, b) {
-    const max = Math.max(r,g,b), min = Math.min(r,g,b);
-    let h, s, l = (max+min)/2;
-    if (max === min) { h = s = 0; }
-    else {
-      const d = max - min;
-      s = l > 0.5 ? d/(2-max-min) : d/(max+min);
-      if (max===r) h = ((g-b)/d + (g<b?6:0))/6;
-      else if (max===g) h = ((b-r)/d+2)/6;
-      else h = ((r-g)/d+4)/6;
-    }
-    return [h, s, l];
-  }
-
-  function hslToRgb(h, s, l) {
-    if (s === 0) return [l,l,l];
-    const hue2rgb = (p,q,t) => {
-      if (t<0) t+=1; if (t>1) t-=1;
-      if (t<1/6) return p+(q-p)*6*t;
-      if (t<1/2) return q;
-      if (t<2/3) return p+(q-p)*(2/3-t)*6;
-      return p;
-    };
-    const q = l<0.5 ? l*(1+s) : l+s-l*s;
-    const p = 2*l-q;
-    return [hue2rgb(p,q,h+1/3), hue2rgb(p,q,h), hue2rgb(p,q,h-1/3)];
-  }
-
-  // HSL range weights for Lightroom-style HSL panel
-  // Returns weight [0-1] for how much a hue affects a given color range
-  function hueWeight(hDeg, centerDeg, width) {
-    let diff = Math.abs(hDeg - centerDeg);
-    if (diff > 180) diff = 360 - diff;
-    return Math.max(0, 1 - diff / width);
-  }
-
   function applyPreset(intensity) {
     if (!originalImageData) return;
-    const f = intensity / 100;
-
-    const imageData = new ImageData(
-      new Uint8ClampedArray(originalImageData.data),
-      originalImageData.width,
-      originalImageData.height
-    );
+    const f = intensity \/ 100;
+    const imageData = new ImageData(new Uint8ClampedArray(originalImageData.data), originalImageData.width, originalImageData.height);
     const data = imageData.data;
-
     for (let i = 0; i < data.length; i += 4) {
       let r = data[i], g = data[i+1], b = data[i+2];
-
-      // 1. LUT適用
-      r = r + (redLUT[r]   - r) * f;
-      g = g + (greenLUT[g] - g) * f;
-      b = b + (blueLUT[b]  - b) * f;
-
-      // 2. (HSL panel disabled for LUT-only pages)
-      // 3. Film grain (disabled)
-      const noise = (Math.random() - 0.5) * 0;
-      data[i]   = Math.max(0, Math.min(255, r + noise));
-      data[i+1] = Math.max(0, Math.min(255, g + noise));
-      data[i+2] = Math.max(0, Math.min(255, b + noise));
+      data[i]   = Math.max(0, Math.min(255, r + (redLUT[r]   - r) * f));
+      data[i+1] = Math.max(0, Math.min(255, g + (greenLUT[g] - g) * f));
+      data[i+2] = Math.max(0, Math.min(255, b + (blueLUT[b]  - b) * f));
     }
-
-    // 4. Vignette
-    const W = imageData.width, H = imageData.height;
-    const cx = W / 2, cy = H / 2;
-    const maxDist = Math.sqrt(cx * cx + cy * cy);
-    const vigStrength = 0;
-    for (let y = 0; y < H; y++) {
-      for (let x = 0; x < W; x++) {
-        const idx = (y * W + x) * 4;
-        const dist = Math.sqrt((x - cx) ** 2 + (y - cy) ** 2) / maxDist;
-        const mid = 50 / 100;
-        const vig = dist > mid ? (dist - mid) / (1 - mid) : 0;
-        const factor = Math.max(0, 1 - vigStrength * vig * vig);
-        data[idx]   = Math.round(data[idx]   * factor);
-        data[idx+1] = Math.round(data[idx+1] * factor);
-        data[idx+2] = Math.round(data[idx+2] * factor);
-      }
-    }
-
     ctx.putImageData(imageData, 0, 0);
-    imgAfter.src = canvas.toDataURL('image/jpeg', 0.92);
+    imgAfter.src = canvas.toDataURL('image\/jpeg', 0.92);
   }
-
-  // Intensity slider
-  intensitySlider.addEventListener('input', e => {
-    const val = parseInt(e.target.value);
-    intensityLabel.textContent = val;
-    applyPreset(val);
-  });
-
-  // Comparison slider
-  // Left = Before (original), Right = After (preset)
-  // imgAfter sits on top, clipped to show only the right portion
+  intensitySlider.addEventListener('input', e => { const val = parseInt(e.target.value); intensityLabel.textContent = val; applyPreset(val); });
   function updateSlider(pos) {
     sliderPos = Math.max(0, Math.min(100, pos));
-    const pct = sliderPos + '%';
-    sliderLine.style.left = pct;
-    sliderHandle.style.left = pct;
-    // Show After on the RIGHT side of the slider
+    sliderLine.style.left = sliderPos + '%'; sliderHandle.style.left = sliderPos + '%';
     imgAfter.style.clipPath = \`inset(0 0 0 \${sliderPos}%)\`;
   }
-
   comparisonWrap.addEventListener('mousedown', e => { isDragging = true; handleMove(e); });
   comparisonWrap.addEventListener('touchstart', e => { isDragging = true; handleMove(e.touches[0]); });
   document.addEventListener('mousemove', e => { if (isDragging) handleMove(e); });
   document.addEventListener('touchmove', e => { if (isDragging) handleMove(e.touches[0]); });
   document.addEventListener('mouseup', () => isDragging = false);
   document.addEventListener('touchend', () => isDragging = false);
-
   function handleMove(e) {
     const rect = comparisonWrap.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    updateSlider((x / rect.width) * 100);
+    updateSlider((e.clientX - rect.left) \/ rect.width * 100);
   }
-
-  // 「別の写真を使う」→ ファイル選択ダイアログを直接開く
-  resetBtn.addEventListener('click', () => {
-    fileInput.value = '';
-    fileInput.click();
-  });
+  resetBtn.addEventListener('click', () => { fileInput.value = ''; fileInput.click(); });
 <\/script>
-</body>
-</html>
+<\/body>
+<\/html>
 `;
 }
-
-
 </script>
 </body>
 </html>
