@@ -1044,6 +1044,7 @@ ${gaScript}
     background: var(--light1);
     outline: none;
     cursor: pointer;
+    touch-action: pan-x;
   }
 
   .control-group input[type=range]::-webkit-slider-thumb {
@@ -1335,7 +1336,7 @@ ${purchaseSection}
       const img = new Image();
       img.onload = () => {
         // Set canvas size
-        const maxW = 1200;
+        const maxW = 600;
         const scale = Math.min(1, maxW / img.width);
         canvas.width = img.width * scale;
         canvas.height = img.height * scale;
