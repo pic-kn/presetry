@@ -296,7 +296,7 @@
   }
 
   .img-after { clip-path: inset(0 50% 0 0); }
-  #afterCanvas { clip-path: inset(0 50% 0 0); }
+  .img-after { clip-path: inset(0 50% 0 0); }
 
   .slider-line {
     position: absolute;
@@ -563,8 +563,7 @@
 
     <div class="comparison-wrap" id="comparisonWrap">
       <img id="imgBefore" src="" alt="Before">
-      <canvas id="afterCanvas"></canvas>
-      <img id="afterSaveImg" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none;z-index:10;">
+      <img id="imgAfter" src="" alt="After">
       <div class="slider-line" id="sliderLine"></div>
       <div class="slider-handle" id="sliderHandle">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -686,8 +685,7 @@
   const fileInput = document.getElementById('fileInput');
   const viewer = document.getElementById('viewer');
   const imgBefore = document.getElementById('imgBefore');
-  const afterCanvas = document.getElementById('afterCanvas');
-  const afterCtx = afterCanvas.getContext('2d');
+  const imgAfter = document.getElementById('imgAfter');
   const sliderLine = document.getElementById('sliderLine');
   const sliderHandle = document.getElementById('sliderHandle');
   const comparisonWrap = document.getElementById('comparisonWrap');
@@ -725,9 +723,6 @@
 
         // Before = original (save before any processing)
         imgBefore.src = canvas.toDataURL();
-        // afterCanvasのサイズを合わせておく
-        afterCanvas.width = canvas.width;
-        afterCanvas.height = canvas.height;
         // After = preset applied
         applyPreset(100);
 
@@ -799,12 +794,7 @@
     }
 
     ctx.putImageData(imageData, 0, 0);
-    // afterCanvasに直接コピー（toDataURL廃止）
-    if (afterCanvas.width !== imageData.width || afterCanvas.height !== imageData.height) {
-      afterCanvas.width = imageData.width;
-      afterCanvas.height = imageData.height;
-    }
-    afterCtx.putImageData(imageData, 0, 0);
+    imgAfter.src = canvas.toDataURL('image/jpeg', 0.92);
   }
 
   // Intensity slider — rAFで描画タイミングを最適化
@@ -831,19 +821,17 @@
     sliderLine.style.left = pct;
     sliderHandle.style.left = pct;
     // Show After on the RIGHT side of the slider
-    afterCanvas.style.clipPath = `inset(0 0 0 ${sliderPos}%)`;
+    imgAfter.style.clipPath = `inset(0 0 0 ${sliderPos}%)`;
   }
 
   let sliderUsed = false;
   comparisonWrap.addEventListener('mousedown', e => {
     isDragging = true;
-    clearTimeout(longPressTimer);
     handleMove(e);
     if (!sliderUsed) { sliderUsed = true; gtag('event', 'comparison_slider_used', { event_category: 'engagement' }); }
   });
   comparisonWrap.addEventListener('touchstart', e => {
     isDragging = true;
-    clearTimeout(longPressTimer);
     handleMove(e.touches[0]);
     if (!sliderUsed) { sliderUsed = true; gtag('event', 'comparison_slider_used', { event_category: 'engagement' }); }
   });
@@ -851,19 +839,6 @@
   document.addEventListener('touchmove', e => { if (isDragging) { e.preventDefault(); handleMove(e.touches[0]); } }, { passive: false });
   document.addEventListener('mouseup', () => isDragging = false);
   document.addEventListener('touchend', () => isDragging = false);
-
-  // 長押しでAfter画像を保存できる裏機能
-  let longPressTimer = null;
-  const afterSaveImg = document.getElementById('afterSaveImg');
-  afterCanvas.addEventListener('touchstart', e => {
-    longPressTimer = setTimeout(() => {
-      afterSaveImg.src = afterCanvas.toDataURL('image/jpeg', 0.95);
-      afterSaveImg.style.display = 'block';
-      setTimeout(() => { afterSaveImg.style.display = 'none'; }, 3000);
-    }, 600);
-  }, { passive: true });
-  afterCanvas.addEventListener('touchend', () => { clearTimeout(longPressTimer); });
-  afterCanvas.addEventListener('touchmove', () => { clearTimeout(longPressTimer); });
 
 
   function handleMove(e) {
