@@ -348,6 +348,7 @@ async function checkPw() {
     });
     const data = await res.json();
     if (data.success) {
+      sessionStorage.setItem('accessCode', val);
       document.getElementById('passwordGate').style.display = 'none';
     } else {
       document.getElementById('pwError').textContent = 'アクセスコードが正しくありません';
@@ -644,7 +645,7 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
       const res = await fetch('https://presetry-push.pickn-photograph001.workers.dev', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: userSlug, presetSlug, html }),
+        body: JSON.stringify({ username: userSlug, presetSlug, html, code: sessionStorage.getItem('accessCode') }),
         signal: controller.signal,
       });
       clearTimeout(timeout);
