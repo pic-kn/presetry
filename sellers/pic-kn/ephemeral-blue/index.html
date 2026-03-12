@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="../../../favicon.svg">
 
 <title>Ephemeral Blue — Presetry</title>
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
@@ -267,6 +268,7 @@
     cursor: ew-resize;
     aspect-ratio: 3/2;
     background: var(--light1);
+    touch-action: none;
   }
 
   .comparison-wrap img {
@@ -346,6 +348,7 @@
     background: var(--light1);
     outline: none;
     cursor: pointer;
+    touch-action: pan-x;
   }
 
   .control-group input[type=range]::-webkit-slider-thumb {
@@ -568,10 +571,10 @@
 
   <div class="cta-section">
     <div>
-      <p class="cta-meta">プリセトリ最高だよね！！！！！<br>keiju<br>Lightroom Classic &nbsp;/&nbsp; .xmp</p>
+      <p class="cta-meta">テストテストテストテストテストテストテスト<br>keiju<br>Lightroom Classic &nbsp;/&nbsp; .xmp</p>
     </div>
     <div>
-      <a href="https://pickn.gumroad.com/?_gl=1*1osb615*_ga*MjE0NjU0NTM4Ny4xNzQ0NDQ3OTk2*_ga_6LJN6D94N6*MTc0NDQ0Nzk5Ni4xLjEuMTc0NDQ1MTM1Mi4wLjAuMA.." target="_blank" rel="noopener" class="cta-btn">
+      <a href="https://pickn.gumroad.com/l/ephemeralblue?layout=profile" target="_blank" rel="noopener" class="cta-btn" id="ctaBtn">
         購入する
         <span class="cta-price">Ephemeral Blue</span>
       </a>
@@ -587,7 +590,7 @@
 
 <script>
   // LUT curves (auto-generated)
-  const curves = { red: [[0,19],[16,27],[32,36],[48,43],[64,64],[80,92],[96,119],[112,134],[128,153],[144,173],[160,190],[176,195],[192,201],[208,204],[224,218],[240,235],[255,252]], green: [[0,24],[16,38],[32,57],[48,76],[64,99],[80,134],[96,155],[112,167],[128,179],[144,191],[160,202],[176,205],[192,208],[208,214],[224,226],[240,239],[255,252]], blue: [[0,37],[16,48],[32,62],[48,81],[64,123],[80,156],[96,171],[112,178],[128,186],[144,194],[160,202],[176,207],[192,212],[208,219],[224,224],[240,238],[255,253]] };
+  const curves = { red: [[0,19],[16,26],[32,39],[48,67],[64,92],[80,123],[96,157],[112,205],[128,215],[144,220],[160,234],[176,242],[192,246],[208,252],[224,253],[240,255],[255,254]], green: [[0,24],[16,37],[32,58],[48,97],[64,134],[80,159],[96,180],[112,206],[128,215],[144,227],[160,231],[176,230],[192,243],[208,231],[224,230],[240,240],[255,255]], blue: [[0,35],[16,49],[32,63],[48,97],[64,145],[80,170],[96,185],[112,198],[128,208],[144,218],[160,229],[176,176],[192,192],[208,208],[224,224],[240,240],[255,255]] };
 
   // Build LUT from curve control points using linear interpolation
   function buildLUT(points) {
@@ -648,7 +651,7 @@
       const img = new Image();
       img.onload = () => {
         // Set canvas size
-        const maxW = 1200;
+        const maxW = 600;
         const scale = Math.min(1, maxW / img.width);
         canvas.width = img.width * scale;
         canvas.height = img.height * scale;
@@ -663,6 +666,7 @@
         uploadZone.style.display = 'none';
         viewer.classList.add('active');
         updateSlider(50);
+        if (typeof gtag !== 'undefined') gtag('event', 'trial_start', { event_category: 'engagement', event_label: 'photo_uploaded' });
       };
       img.src = e.target.result;
     };
@@ -762,6 +766,9 @@
     applyPreset(val);
   });
 
+  // 画像保存ブロック
+  document.addEventListener('contextmenu', e => { if (e.target.tagName === 'IMG' || e.target.tagName === 'CANVAS') e.preventDefault(); });
+
   // Comparison slider
   // Left = Before (original), Right = After (preset)
   // imgAfter sits on top, clipped to show only the right portion
@@ -774,10 +781,17 @@
     imgAfter.style.clipPath = `inset(0 0 0 ${sliderPos}%)`;
   }
 
-  comparisonWrap.addEventListener('mousedown', e => { isDragging = true; handleMove(e); });
-  comparisonWrap.addEventListener('touchstart', e => { isDragging = true; handleMove(e.touches[0]); });
+  let sliderTracked = false;
+  function trackSlider() {
+    if (!sliderTracked && typeof gtag !== 'undefined') {
+      gtag('event', 'slider_interaction', { event_category: 'engagement', event_label: 'comparison_slider' });
+      sliderTracked = true;
+    }
+  }
+  comparisonWrap.addEventListener('mousedown', e => { isDragging = true; handleMove(e); trackSlider(); });
+  comparisonWrap.addEventListener('touchstart', e => { isDragging = true; handleMove(e.touches[0]); trackSlider(); });
   document.addEventListener('mousemove', e => { if (isDragging) handleMove(e); });
-  document.addEventListener('touchmove', e => { if (isDragging) handleMove(e.touches[0]); });
+  document.addEventListener('touchmove', e => { if (isDragging) { e.preventDefault(); handleMove(e.touches[0]); } }, { passive: false });
   document.addEventListener('mouseup', () => isDragging = false);
   document.addEventListener('touchend', () => isDragging = false);
 
@@ -792,6 +806,12 @@
     fileInput.value = '';
     fileInput.click();
   });
+  const ctaBtn = document.getElementById('ctaBtn');
+  if (ctaBtn && typeof gtag !== 'undefined') {
+    ctaBtn.addEventListener('click', () => {
+      gtag('event', 'purchase_click', { event_category: 'conversion', event_label: 'Ephemeral Blue' });
+    });
+  }
 </script>
 </body>
 </html>
