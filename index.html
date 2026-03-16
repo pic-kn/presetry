@@ -240,7 +240,7 @@
 
   function renderPage(data, curves, presetList, currentPresetSlug) {
     const sellerTag = data.sellerName ? ` by ${data.sellerName}` : '';
-    const selectHtml = presetList && presetList.length > 1 ? `
+    const selectHtml = presetList && presetList.length >= 1 ? `
       <div class="preset-select-wrap">
         <select class="preset-select" id="presetSelect">
           ${presetList.map(p => `<option value="${p}" ${p === currentPresetSlug ? 'selected' : ''}>${p}</option>`).join('')}
