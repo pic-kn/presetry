@@ -304,6 +304,90 @@
 
   canvas { display: none; }
 
+  /* ── Tabs ── */
+  .tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: 40px;
+    border-bottom: 1px solid var(--light1);
+  }
+  .tab-btn {
+    padding: 12px 24px;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: all 0.2s;
+  }
+  .tab-btn.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* ── Manage ── */
+  .manage-form {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .manage-form input {
+    flex: 1;
+  }
+  .manage-btn {
+    padding: 12px 20px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    cursor: pointer;
+    white-space: nowrap;
+    font-family: inherit;
+  }
+  .manage-btn.danger {
+    background: #c0392b;
+  }
+  .manage-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .preset-list { display: flex; flex-direction: column; gap: 8px; }
+  .preset-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 16px;
+    border: 1px solid var(--light1);
+    border-radius: 4px;
+    background: white;
+  }
+  .preset-item-name { font-size: 13px; color: var(--ink); letter-spacing: 0.05em; }
+  .preset-item-actions { display: flex; gap: 8px; }
+  .preset-action-btn {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: none;
+    border: 1px solid var(--light1);
+    padding: 6px 12px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s;
+    border-radius: 2px;
+  }
+  .preset-action-btn:hover { border-color: var(--accent); }
+  .preset-action-btn.danger { color: #c0392b; }
+  .preset-action-btn.danger:hover { border-color: #c0392b; }
+  .manage-status { font-size: 12px; color: var(--mid); margin-top: 12px; letter-spacing: 0.05em; text-align: center; min-height: 16px; }
+
+
   @media (max-width: 600px) {
     .input-row { grid-template-columns: 1fr; }
     .pair-uploads { grid-template-columns: 1fr 1fr; }
@@ -365,6 +449,13 @@ async function checkPw() {
 
 <div class="wrap">
   <p class="logo">Presetry</p>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('create')">新規作成</button>
+    <button class="tab-btn" onclick="switchTab('manage')">管理</button>
+  </div>
+
+  <div id="tab-create" class="tab-content active">
   <h1>Generator</h1>
   <p class="subtitle">Before / After 画像をアップロードするだけで、あなたのプリセット専用の試着ページを生成します。<br>3〜5 ペアの画像で精度が上がります。</p>
 
@@ -412,6 +503,21 @@ async function checkPw() {
     <p id="publishStatus" style="font-size:12px;color:var(--mid);margin-top:12px;min-height:16px;text-align:center;letter-spacing:0.05em;"></p>
     <p id="publishUrl" style="font-size:12px;margin-top:8px;text-align:center;"></p>
   </div>
+</div>
+
+  </div><!-- /tab-create -->
+
+  <div id="tab-manage" class="tab-content">
+    <h1>プリセット管理</h1>
+    <p class="subtitle" style="margin-bottom:32px;">登録済みのプリセットを編集・削除できます。</p>
+    <div class="manage-form">
+      <input type="text" id="manageUsername" placeholder="ユーザー名" style="max-width:200px;">
+      <button class="manage-btn" onclick="loadPresets()">読み込む</button>
+    </div>
+    <div class="preset-list" id="presetList"></div>
+    <p class="manage-status" id="manageStatus"></p>
+  </div><!-- /tab-manage -->
+
 </div>
 
 <canvas id="canvas"></canvas>
@@ -1532,6 +1638,96 @@ ${purchaseSection}
 `;
 }
 
+
+
+// ── Tab switching ──
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// ── Manage ──
+async function loadPresets() {
+  const username = document.getElementById('manageUsername').value.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+  if (!username) { alert('ユーザー名を入力してください'); return; }
+  const status = document.getElementById('manageStatus');
+  const list = document.getElementById('presetList');
+  status.textContent = '読み込み中...';
+  list.innerHTML = '';
+
+  try {
+    const res = await fetch('https://presetry-push.pickn-photograph001.workers.dev/presets?username=' + username);
+    const data = await res.json();
+    if (!data.presets || data.presets.length === 0) {
+      status.textContent = 'プリセットが見つかりませんでした';
+      return;
+    }
+    status.textContent = '';
+    list.innerHTML = data.presets.map(slug => `
+      <div class="preset-item">
+        <span class="preset-item-name">${slug}</span>
+        <div class="preset-item-actions">
+          <button class="preset-action-btn" onclick="editPreset('${username}', '${slug}')">編集</button>
+          <button class="preset-action-btn danger" onclick="deletePreset('${username}', '${slug}')">削除</button>
+        </div>
+      </div>
+    `).join('');
+  } catch(e) {
+    status.textContent = 'エラーが発生しました';
+  }
+}
+
+async function editPreset(username, presetSlug) {
+  const status = document.getElementById('manageStatus');
+  status.textContent = '読み込み中...';
+  try {
+    const res = await fetch('https://presetry-push.pickn-photograph001.workers.dev/get', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, presetSlug, code: sessionStorage.getItem('accessCode') })
+    });
+    const result = await res.json();
+    if (!result.success) { status.textContent = 'エラー: ' + result.error; return; }
+
+    // 新規作成タブに切り替えてフォームに値をセット
+    document.querySelector('.tab-btn').click();
+    document.getElementById('username').value = username;
+    document.getElementById('usernamePreview').textContent = username;
+    document.getElementById('presetName').value = result.data.presetName || '';
+    document.getElementById('sellerName').value = result.data.sellerName || '';
+    document.getElementById('purchaseUrl').value = result.data.purchaseUrl || '';
+    document.getElementById('presetDesc').value = result.data.presetDesc || '';
+    document.getElementById('gaId').value = result.data.gaId || '';
+    status.textContent = '';
+    alert('情報を読み込みました。Before/Afterペアを再アップロードして「ページを生成する」を押してください。');
+  } catch(e) {
+    status.textContent = 'エラーが発生しました';
+  }
+}
+
+async function deletePreset(username, presetSlug) {
+  if (!confirm(`「${presetSlug}」を削除しますか？この操作は取り消せません。`)) return;
+  const status = document.getElementById('manageStatus');
+  status.textContent = '削除中...';
+  try {
+    const res = await fetch('https://presetry-push.pickn-photograph001.workers.dev/delete', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, presetSlug, code: sessionStorage.getItem('accessCode') })
+    });
+    const result = await res.json();
+    if (result.success) {
+      status.textContent = '削除しました';
+      loadPresets();
+    } else {
+      status.textContent = 'エラー: ' + result.error;
+    }
+  } catch(e) {
+    status.textContent = 'エラーが発生しました';
+  }
+}
 
 </script>
 </body>
