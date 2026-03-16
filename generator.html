@@ -724,9 +724,10 @@ function getSnsLinks() {
   const rows = document.querySelectorAll('.sns-input-row');
   const links = [];
   rows.forEach(row => {
-    const idx = row.dataset.index;
-    const type = document.getElementById('snsType-' + idx)?.value;
-    const url  = document.getElementById('snsUrl-'  + idx)?.value.trim();
+    const sel = row.querySelector('select');
+    const inp = row.querySelector('input[type="text"]');
+    const type = sel?.value;
+    const url  = inp?.value.trim();
     if (type && url) links.push({ type, url });
   });
   return links;
