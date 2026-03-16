@@ -151,10 +151,17 @@
   const WORKER_URL = 'https://presetry-push.pickn-photograph001.workers.dev';
 
   // URLからusername・presetSlugを取得
-  // 例: /sellers/bluesoda/mizuiro-morning/
+  // パス形式: /sellers/username/presetSlug/
+  // パラメータ形式: /?username=xxx&presetSlug=xxx
   function getPresetFromURL() {
+    // まずクエリパラメータを確認
+    const params = new URLSearchParams(location.search);
+    const u = params.get('username');
+    const p = params.get('presetSlug');
+    if (u && p) return { username: u, presetSlug: p };
+
+    // 次にパスを確認
     const parts = location.pathname.split('/').filter(Boolean);
-    // ['sellers', 'bluesoda', 'mizuiro-morning']
     if (parts.length >= 3 && parts[0] === 'sellers') {
       return { username: parts[1], presetSlug: parts[2] };
     }
@@ -440,7 +447,12 @@
     }
   }
 
-  init();
+  // ルートアクセス時はデフォルトプリセットにリダイレクト
+  if (location.pathname === '/' && !location.search) {
+    location.replace('/?username=pic-kn&presetSlug=ephemeral-blue');
+  } else {
+    init();
+  }
 </script>
 </body>
 </html>
