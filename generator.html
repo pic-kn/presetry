@@ -736,8 +736,16 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
   const userSlug   = username.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
   const presetSlug = presetName.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
 
-  document.getElementById('resultDesc').textContent =
-    `「${presetName}」の試着ページが生成されました。`;
+  // presetSlugが空になってしまう場合（日本語名など）は弾く
+  if (!userSlug || !presetSlug) {
+    progressLabel.textContent = `URLに使用できる文字が含まれていません。英数字・ハイフンを含む名前を使用してください。（userSlug="${userSlug}", presetSlug="${presetSlug}"）`;
+    progressBar.style.width = '0%';
+    document.getElementById('generateBtn').disabled = false;
+    return;
+  }
+
+  document.getElementById('resultDesc').innerHTML =
+    `「${presetName}」の試着ページが生成されました。<br><span style="font-size:11px;color:var(--mid);letter-spacing:0.05em;">URL: presetry.com/sellers/<strong>${userSlug}</strong>/<strong>${presetSlug}</strong>/</span>`;
 
   // 公開ボタンの設定
   const publishBtn = document.getElementById('publishBtn');
@@ -749,7 +757,7 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
     urlEl.textContent = '';
 
     const controller = new AbortController();
-    const timeout = setTimeout(() => { controller.abort(); }, 20000);
+    const timeout = setTimeout(() => { controller.abort(); }, 45000);
 
     // リダイレクト用index.htmlを生成
     const redirectHtml = `<!DOCTYPE html>\n<html>\n<head>\n<meta charset="UTF-8">\n<script>location.replace('https://presetry.com/?username=${userSlug}&presetSlug=${presetSlug}');<\/script>\n</head>\n</html>`;
@@ -773,20 +781,36 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
         signal: controller.signal,
       });
       clearTimeout(timeout);
-      const data = await res.json();
+
+      let data;
+      const rawText = await res.text();
+      try {
+        data = JSON.parse(rawText);
+      } catch {
+        status.textContent = `レスポンスのパースに失敗しました (HTTP ${res.status})`;
+        urlEl.innerHTML = `<pre style="font-size:10px;color:#c0392b;text-align:left;white-space:pre-wrap;word-break:break-all;">${rawText.slice(0, 500)}</pre>`;
+        publishBtn.disabled = false;
+        return;
+      }
+
       if (data.success) {
-        status.textContent = '公開完了！';
+        status.textContent = data.warning ? `公開完了（警告あり: ${data.warning}）` : '公開完了！';
         urlEl.innerHTML = `<a href="${data.url}" target="_blank" style="color:var(--accent);text-decoration:underline;">${data.url}</a><br><span style="font-size:11px;color:var(--mid);letter-spacing:0.05em;">※ アクセスできない場合は少し時間をおいてお試しください。</span>`;
       } else {
-        status.textContent = `エラー: ${data.error}`;
+        // 詳細なエラー情報を表示
+        const errMsg = data.error || '不明なエラー';
+        const errDetail = data.detail ? JSON.stringify(data.detail, null, 2) : '';
+        const debugInfo = data._debug ? JSON.stringify(data._debug, null, 2) : '';
+        status.textContent = `エラー: ${errMsg}`;
+        urlEl.innerHTML = errDetail || debugInfo ? `<pre style="font-size:10px;color:#c0392b;text-align:left;white-space:pre-wrap;word-break:break-all;margin-top:8px;">${[errDetail, debugInfo].filter(Boolean).join('\n\n').slice(0, 800)}</pre>` : '';
         publishBtn.disabled = false;
       }
     } catch (e) {
       clearTimeout(timeout);
       if (e.name === 'AbortError') {
-        status.textContent = 'タイムアウトしました。時間をおいて再度お試しください。';
+        status.textContent = 'タイムアウトしました（45秒）。時間をおいて再度お試しください。';
       } else {
-        status.textContent = 'ネットワークエラーが発生しました';
+        status.textContent = `ネットワークエラー: ${e.message}`;
       }
       publishBtn.disabled = false;
     }
