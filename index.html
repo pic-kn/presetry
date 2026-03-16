@@ -105,9 +105,70 @@
   .control-group input[type=range] { width: 100%; -webkit-appearance: none; height: 1px; background: var(--light1); outline: none; cursor: pointer; touch-action: pan-x; }
   .control-group input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); cursor: pointer; }
   .intensity-val { font-size: 10px; color: var(--light2); text-align: right; margin-top: 6px; font-family: fot-tsukuardgothic-std, 'Noto Sans JP', sans-serif; letter-spacing: 0.1em; }
-  .cta-section { border-top: 1px solid var(--light1); padding: 52px 0 48px; display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 32px; }
-  .cta-meta { font-size: 11px; letter-spacing: 0.15em; color: var(--ink-dim); font-weight: 300; line-height: 2; }
-  .cta-btn { display: inline-flex; flex-direction: column; align-items: center; gap: 4px; border: 1px solid var(--accent); color: var(--accent); padding: 16px 36px; text-decoration: none; font-family: fot-tsukuardgothic-std, 'Noto Sans JP', sans-serif; font-size: 12px; letter-spacing: 0.25em; text-transform: uppercase; transition: all 0.4s ease; white-space: nowrap; background: transparent; }
+  /* ── Seller Card ── */
+  .seller-section { border-top: 1px solid var(--light1); padding: 52px 0 48px; }
+  .seller-card {
+    border: 1px solid var(--light1);
+    border-radius: 6px;
+    padding: 28px;
+    background: white;
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .seller-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--light2));
+  }
+  .seller-card-header {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .seller-name {
+    font-size: 13px;
+    letter-spacing: 0.15em;
+    color: var(--ink);
+    font-weight: 400;
+  }
+  .seller-tag {
+    font-size: 9px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--light2);
+  }
+  .seller-desc {
+    font-size: 12px;
+    color: var(--ink-dim);
+    line-height: 2;
+    letter-spacing: 0.05em;
+    margin-bottom: 20px;
+  }
+  .sns-links {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .sns-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--mid);
+    text-decoration: none;
+    border: 1px solid var(--light1);
+    padding: 6px 12px;
+    border-radius: 2px;
+    transition: all 0.2s;
+  }
+  .sns-link:hover { border-color: var(--accent); color: var(--accent); }
+  .sns-link svg { width: 12px; height: 12px; flex-shrink: 0; }
+  .cta-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; border: 1px solid var(--accent); color: var(--accent); padding: 18px 36px; text-decoration: none; font-family: fot-tsukuardgothic-std, 'Noto Sans JP', sans-serif; font-size: 12px; letter-spacing: 0.25em; text-transform: uppercase; transition: all 0.4s ease; background: transparent; box-sizing: border-box; }
   .cta-btn:hover { background: var(--accent); color: var(--base); }
   .cta-btn:hover .cta-price { color: rgba(252,252,252,0.6); }
   .cta-price { font-size: 10px; color: var(--light2); letter-spacing: 0.15em; transition: color 0.4s; }
@@ -127,8 +188,8 @@
     .upload-zone { padding: 40px 16px; margin-bottom: 36px; }
     .upload-note { font-size: 9px; }
     .viewer { margin-bottom: 36px; }
-    .cta-section { grid-template-columns: 1fr; padding: 32px 0 28px; gap: 20px; }
-    .cta-btn { width: 100%; justify-content: center; padding: 16px 20px; box-sizing: border-box; }
+    .seller-section { padding: 32px 0 28px; }
+    .seller-card { padding: 20px; }
     footer { flex-direction: column; gap: 6px; padding: 18px 0 32px; }
     .disclaimer { font-size: 9px; }
   }
@@ -246,17 +307,36 @@
           ${presetList.map(p => `<option value="${p}" ${p === currentPresetSlug ? 'selected' : ''}>${p}</option>`).join('')}
         </select>
       </div>` : '';
-    const ctaSection = data.purchaseUrl ? `
-      <div class="cta-section">
-        <div>
-          <p class="cta-meta">${data.presetDesc ? data.presetDesc + '<br>' : ''}${data.sellerName ? data.sellerName + '<br>' : ''}プリセット &nbsp;/&nbsp; .xmp</p>
-        </div>
-        <div>
-          <a href="${data.purchaseUrl}" target="_blank" rel="noopener" class="cta-btn" id="ctaBtn">
-            購入する
-            <span class="cta-price">${data.presetName}</span>
-          </a>
-        </div>
+    // SNSリンクHTML生成
+    const snsIcons = {
+      instagram: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>`,
+      x:         `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L2.25 2.25h6.918l4.258 5.63 5.818-5.63zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>`,
+      other:     `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>`,
+    };
+    const snsLinksHtml = (data.snsLinks && data.snsLinks.length > 0)
+      ? data.snsLinks.map(s => {
+          const type = s.type || 'other';
+          const icon = snsIcons[type] || snsIcons.other;
+          const label = type === 'instagram' ? 'Instagram' : type === 'x' ? 'X' : s.label || 'Link';
+          return `<a href="${s.url}" target="_blank" rel="noopener" class="sns-link">${icon}${label}</a>`;
+        }).join('')
+      : '';
+
+    const sellerCard = (data.sellerName || data.presetDesc || snsLinksHtml) ? `
+      <div class="seller-card">
+        ${data.sellerName ? `<div class="seller-card-header"><span class="seller-name">${data.sellerName}</span><span class="seller-tag">Seller</span></div>` : ''}
+        ${data.presetDesc ? `<p class="seller-desc">${data.presetDesc}</p>` : ''}
+        ${snsLinksHtml ? `<div class="sns-links">${snsLinksHtml}</div>` : ''}
+      </div>` : '';
+
+    const ctaSection = (data.purchaseUrl || sellerCard) ? `
+      <div class="seller-section">
+        ${sellerCard}
+        ${data.purchaseUrl ? `
+        <a href="${data.purchaseUrl}" target="_blank" rel="noopener" class="cta-btn" id="ctaBtn">
+          購入する
+          <span class="cta-price">${data.presetName}</span>
+        </a>` : ''}
       </div>` : '';
 
     document.getElementById('mainContent').innerHTML = `
