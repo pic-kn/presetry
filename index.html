@@ -214,7 +214,7 @@
       // タイトル更新
       document.title = `${data.presetName} — Presetry`;
 
-      renderPage(data, curves, presetList);
+      renderPage(data, curves, presetList, presetSlug);
 
     } catch (e) {
       renderError();
@@ -238,12 +238,12 @@
     `;
   }
 
-  function renderPage(data, curves, presetList) {
+  function renderPage(data, curves, presetList, currentPresetSlug) {
     const sellerTag = data.sellerName ? ` by ${data.sellerName}` : '';
     const selectHtml = presetList && presetList.length > 1 ? `
       <div class="preset-select-wrap">
         <select class="preset-select" id="presetSelect">
-          ${presetList.map(p => `<option value="${p}" ${p === data.presetSlug ? 'selected' : ''}>${p}</option>`).join('')}
+          ${presetList.map(p => `<option value="${p}" ${p === currentPresetSlug ? 'selected' : ''}>${p}</option>`).join('')}
         </select>
       </div>` : '';
     const ctaSection = data.purchaseUrl ? `
