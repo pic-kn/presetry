@@ -714,6 +714,7 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
   await new Promise(r => setTimeout(r, 50)); // let UI update
 
   let curves;
+  let savedCurves;
   const genTimeout = setTimeout(() => {
     progressLabel.textContent = '処理に時間がかかっています。画像サイズを小さくしてお試しください。';
     progressBar.style.width = '0%';
@@ -722,6 +723,7 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
 
   try {
     curves = computeLUTFromPairs(validPairs);
+    savedCurves = curves;
     progressBar.style.width = '70%';
     progressLabel.textContent = 'ページを生成中...';
 
@@ -764,7 +766,7 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
           purchaseUrl,
           presetDesc,
           gaId,
-          curves,
+          curves: savedCurves,
           redirectHtml,
           code: sessionStorage.getItem('accessCode')
         }),
