@@ -380,7 +380,8 @@ async function checkPw() {
         <input type="text" id="sellerName" placeholder="販売者名 / アカウント名（表示名）">
       </div>
       <input type="text" id="purchaseUrl" placeholder="購入リンク URL（例：https://gumroad.com/...）">
-      <textarea id="presetDesc" placeholder="プリセットの説明（省略可）"></textarea>
+      <textarea id="presetDesc" placeholder="プリセットの説明（省略可・100文字以内推奨）" oninput="const c=this.value.length;const w=document.getElementById('descWarn');if(w)w.style.display=c>100?'block':'none';"></textarea>
+      <p id="descWarn" style="display:none;font-size:10px;color:#c0392b;margin-top:4px;letter-spacing:0.05em;">説明文が長すぎる可能性があります（100文字以内推奨）</p>
       <input type="text" id="gaId" placeholder="Google Analytics 測定ID（省略可）例：G-XXXXXXXXXX">
     </div>
   </div>
@@ -564,9 +565,19 @@ function computeLUTFromPairs(validPairs) {
 }
 
 // ── Generate page ──
+// localStorageからusernameを復元
+window.addEventListener('DOMContentLoaded', () => {
+  const saved = localStorage.getItem('presetry_username');
+  if (saved) {
+    document.getElementById('username').value = saved;
+    document.getElementById('usernamePreview').textContent = saved;
+  }
+});
+
 document.getElementById('username').addEventListener('input', function() {
   const slug = this.value.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
   document.getElementById('usernamePreview').textContent = slug || 'username';
+  if (slug) localStorage.setItem('presetry_username', slug);
 });
 
 document.getElementById('generateBtn').addEventListener('click', async () => {
@@ -610,19 +621,12 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
 
     await new Promise(r => setTimeout(r, 50));
 
-    const html = generateHTML({ presetName, sellerName, purchaseUrl, presetDesc, gaId, curves, pairCount: validPairs.length });
     clearTimeout(genTimeout);
     progressBar.style.width = '100%';
     progressLabel.textContent = '完了';
 
-  // Create download
-  const blob = new Blob([html], { type: 'text/html' });
-  const url = URL.createObjectURL(blob);
   const userSlug   = username.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
   const presetSlug = presetName.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
-  const filename = `index.html`;
-  const uploadPath = `sellers/${userSlug}/${presetSlug}/index.html`;
-
 
   document.getElementById('resultDesc').textContent =
     `「${presetName}」の試着ページが生成されました。`;
@@ -637,25 +641,34 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
     urlEl.textContent = '';
 
     const controller = new AbortController();
-    const timeout = setTimeout(() => {
-      controller.abort();
-    }, 20000); // 20秒タイムアウト
+    const timeout = setTimeout(() => { controller.abort(); }, 20000);
+
+    // リダイレクト用index.htmlを生成
+    const redirectHtml = `<!DOCTYPE html>\n<html>\n<head>\n<meta charset="UTF-8">\n<script>location.replace('https://presetry.com/?username=${userSlug}&presetSlug=${presetSlug}');<\/script>\n</head>\n</html>`;
 
     try {
       const res = await fetch('https://presetry-push.pickn-photograph001.workers.dev', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: userSlug, presetSlug, html, code: sessionStorage.getItem('accessCode') }),
+        body: JSON.stringify({
+          username: userSlug,
+          presetSlug,
+          presetName,
+          sellerName,
+          purchaseUrl,
+          presetDesc,
+          gaId,
+          curves,
+          redirectHtml,
+          code: sessionStorage.getItem('accessCode')
+        }),
         signal: controller.signal,
       });
       clearTimeout(timeout);
       const data = await res.json();
       if (data.success) {
-        status.textContent = '公開処理が完了しました。URLを準備中...';
-        setTimeout(() => {
-          status.textContent = '公開完了！';
-          urlEl.innerHTML = `<a href="${data.url}" target="_blank" style="color:var(--accent);text-decoration:underline;">${data.url}</a><br><span style="font-size:11px;color:var(--mid);letter-spacing:0.05em;">※ アクセスできない場合は少し時間をおいてお試しください。</span>`;
-        }, 30000);
+        status.textContent = '公開完了！';
+        urlEl.innerHTML = `<a href="${data.url}" target="_blank" style="color:var(--accent);text-decoration:underline;">${data.url}</a><br><span style="font-size:11px;color:var(--mid);letter-spacing:0.05em;">※ アクセスできない場合は少し時間をおいてお試しください。</span>`;
       } else {
         status.textContent = `エラー: ${data.error}`;
         publishBtn.disabled = false;
@@ -695,7 +708,7 @@ function generateHTML({ presetName, sellerName, purchaseUrl, presetDesc, gaId, c
   const purchaseSection = purchaseUrl ? `
   <div class="cta-section">
     <div>
-      <p class="cta-meta">${presetDesc ? presetDesc + '<br>' : ''}${sellerName ? sellerName + '<br>' : ''}Lightroom Classic &nbsp;/&nbsp; .xmp</p>
+      <p class="cta-meta">${presetDesc ? presetDesc + '<br>' : ''}${sellerName ? sellerName + '<br>' : ''}プリセット &nbsp;/&nbsp; .xmp</p>
     </div>
     <div>
       <a href="${purchaseUrl}" target="_blank" rel="noopener" class="cta-btn" id="ctaBtn">
