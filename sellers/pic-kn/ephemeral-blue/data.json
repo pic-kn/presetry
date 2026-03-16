@@ -4,5 +4,14 @@
   "purchaseUrl": "https://pickn.gumroad.com/l/ephemeralblue",
   "presetDesc": "桜・雨・曇り空のためのプリセット",
   "gaId": "G-1PK3NHVSRM",
-  "snsLinks": []
+  "snsLinks": [
+    {
+      "type": "x",
+      "url": "https://x.com/pic_kn__"
+    },
+    {
+      "type": "instagram",
+      "url": "https://www.instagram.com/pic_kn__/"
+    }
+  ]
 }
