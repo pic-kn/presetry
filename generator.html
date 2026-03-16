@@ -472,18 +472,7 @@ async function checkPw() {
       </div>
       <input type="text" id="purchaseUrl" placeholder="購入リンク URL（例：https://gumroad.com/...）">
       <!-- SNSリンク -->
-      <div id="snsLinksContainer" style="display:flex;flex-direction:column;gap:8px;">
-        <div style="display:flex;align-items:center;gap:8px;" class="sns-input-row" data-index="0">
-          <select id="snsType-0" style="padding:10px 12px;border:1px solid var(--light1);border-radius:4px;font-size:13px;font-family:inherit;color:var(--ink);background:white;outline:none;cursor:pointer;min-width:130px;">
-            <option value="">SNS種別</option>
-            <option value="instagram">Instagram</option>
-            <option value="x">X (Twitter)</option>
-            <option value="other">その他</option>
-          </select>
-          <input type="text" id="snsUrl-0" placeholder="SNS URL（省略可）" style="flex:1;">
-          <button type="button" onclick="addSnsRow()" style="padding:10px 14px;background:none;border:1px dashed var(--light1);border-radius:4px;font-size:11px;letter-spacing:0.1em;color:var(--mid);cursor:pointer;white-space:nowrap;font-family:inherit;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--mid)'" onmouseout="this.style.borderColor='var(--light1)'">+ 追加</button>
-        </div>
-      </div>
+      <div id="snsLinksContainer" style="display:flex;flex-direction:column;gap:8px;"></div>
       <textarea id="presetDesc" placeholder="プリセットの説明（省略可・100文字以内推奨）" oninput="const c=this.value.length;const w=document.getElementById('descWarn');if(w)w.style.display=c>100?'block':'none';"></textarea>
       <p id="descWarn" style="display:none;font-size:10px;color:#c0392b;margin-top:4px;letter-spacing:0.05em;">説明文が長すぎる可能性があります（100文字以内推奨）</p>
       <input type="text" id="gaId" placeholder="Google Analytics 測定ID（省略可）例：G-XXXXXXXXXX">
@@ -700,22 +689,25 @@ function computeLUTFromPairs(validPairs) {
 // ── SNSリンク管理 ──
 let snsRowCount = 1;
 
-function addSnsRow() {
+function addSnsRow(isFirst) {
   const idx = snsRowCount++;
   const container = document.getElementById('snsLinksContainer');
   const row = document.createElement('div');
   row.style.cssText = 'display:flex;align-items:center;gap:8px;';
   row.className = 'sns-input-row';
   row.dataset.index = idx;
+  const btn = isFirst
+    ? `<button type="button" onclick="addSnsRow(false)" style="padding:10px 14px;background:none;border:1px dashed var(--light1);border-radius:4px;font-size:11px;letter-spacing:0.1em;color:var(--mid);cursor:pointer;white-space:nowrap;font-family:inherit;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--mid)'" onmouseout="this.style.borderColor='var(--light1)'">+ 追加</button>`
+    : `<button type="button" onclick="this.closest('.sns-input-row').remove()" style="padding:10px 14px;background:none;border:1px solid var(--light1);border-radius:4px;font-size:11px;color:var(--light1);cursor:pointer;font-family:inherit;transition:all 0.2s;" onmouseover="this.style.color='#c0392b';this.style.borderColor='#c0392b'" onmouseout="this.style.color='var(--light1)';this.style.borderColor='var(--light1)'">削除</button>`;
   row.innerHTML = `
-    <select id="snsType-${idx}" style="padding:10px 12px;border:1px solid var(--light1);border-radius:4px;font-size:13px;font-family:inherit;color:var(--ink);background:white;outline:none;cursor:pointer;min-width:130px;">
+    <select style="padding:10px 12px;border:1px solid var(--light1);border-radius:4px;font-size:13px;font-family:inherit;color:var(--ink);background:white;outline:none;cursor:pointer;min-width:130px;">
       <option value="">SNS種別</option>
       <option value="instagram">Instagram</option>
       <option value="x">X (Twitter)</option>
       <option value="other">その他</option>
     </select>
-    <input type="text" id="snsUrl-${idx}" placeholder="SNS URL" style="flex:1;padding:12px 16px;border:1px solid var(--light1);background:white;color:var(--ink);font-size:14px;font-family:inherit;border-radius:4px;outline:none;">
-    <button type="button" onclick="this.closest('.sns-input-row').remove()" style="padding:10px 14px;background:none;border:1px solid var(--light1);border-radius:4px;font-size:11px;color:var(--light1);cursor:pointer;font-family:inherit;transition:all 0.2s;" onmouseover="this.style.color='#c0392b';this.style.borderColor='#c0392b'" onmouseout="this.style.color='var(--light1)';this.style.borderColor='var(--light1)'">削除</button>
+    <input type="text" placeholder="SNS URL（省略可）" style="flex:1;padding:12px 16px;border:1px solid var(--light1);background:white;color:var(--ink);font-size:14px;font-family:inherit;border-radius:4px;outline:none;">
+    ${btn}
   `;
   container.appendChild(row);
 }
@@ -775,6 +767,15 @@ function mergeCurves(existing, newCurves) {
 
 // ── Generate page ──
 // localStorageからusernameを復元
+// SNS初期行を生成（HTMLにハードコードしない）
+function initSnsRow() {
+  const container = document.getElementById('snsLinksContainer');
+  if (!container) return;
+  container.innerHTML = '';
+  snsRowCount = 0;
+  addSnsRow(true); // 初期行（削除ボタンなし）
+}
+
 window.addEventListener('beforeunload', (e) => {
   if (editMode) {
     e.preventDefault();
@@ -783,6 +784,7 @@ window.addEventListener('beforeunload', (e) => {
 });
 
 window.addEventListener('DOMContentLoaded', () => {
+  initSnsRow();
   const saved = localStorage.getItem('presetry_username');
   if (saved) {
     document.getElementById('username').value = saved;
