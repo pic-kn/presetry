@@ -107,6 +107,7 @@
   .intensity-val { font-size: 10px; color: var(--light2); text-align: right; margin-top: 6px; font-family: fot-tsukuardgothic-std, 'Noto Sans JP', sans-serif; letter-spacing: 0.1em; }
   /* ── Seller Card ── */
   .seller-section { border-top: 1px solid var(--light1); padding: 52px 0 48px; }
+  .cta-btn { margin-bottom: 16px; }
   .seller-card {
     border: 1px solid var(--light1);
     border-radius: 6px;
@@ -214,6 +215,22 @@
 <script>
   const WORKER_URL = 'https://presetry-push.pickn-photograph001.workers.dev';
 
+  // ── Preview mode ──
+  const PREVIEW_MODE = new URLSearchParams(location.search).get('preview') === '1';
+  const MOCK_DATA = {
+    presetName: 'Preview Preset',
+    sellerName: 'seller',
+    purchaseUrl: 'https://example.com',
+    presetDesc: 'これはプレビュー用のダミーデータです。',
+    gaId: '',
+    snsLinks: [{ type: 'instagram', url: 'https://instagram.com' }, { type: 'x', url: 'https://x.com' }]
+  };
+  const MOCK_CURVES = {
+    red:   [[0,0],[16,20],[32,38],[48,58],[64,88],[80,118],[96,145],[112,168],[128,188],[144,204],[160,217],[176,228],[192,236],[208,242],[224,247],[240,252],[255,255]],
+    green: [[0,0],[16,22],[32,42],[48,64],[64,92],[80,122],[96,148],[112,170],[128,190],[144,206],[160,219],[176,229],[192,237],[208,243],[224,248],[240,253],[255,255]],
+    blue:  [[0,0],[16,24],[32,46],[48,70],[64,98],[80,128],[96,154],[112,174],[128,192],[144,207],[160,220],[176,230],[192,238],[208,244],[224,249],[240,253],[255,255]]
+  };
+
   // URLからusername・presetSlugを取得
   // パス形式: /sellers/username/presetSlug/
   // パラメータ形式: /?username=xxx&presetSlug=xxx
@@ -233,6 +250,12 @@
   }
 
   async function init() {
+    // プレビューモード
+    if (PREVIEW_MODE) {
+      renderPage(MOCK_DATA, MOCK_CURVES, [], 'preview-preset');
+      return;
+    }
+
     const preset = getPresetFromURL();
     if (!preset) {
       // トップページ等、プリセットが指定されていない場合
@@ -331,12 +354,12 @@
 
     const ctaSection = (data.purchaseUrl || sellerCard) ? `
       <div class="seller-section">
-        ${sellerCard}
         ${data.purchaseUrl ? `
         <a href="${data.purchaseUrl}" target="_blank" rel="noopener" class="cta-btn" id="ctaBtn">
           購入する
           <span class="cta-price">${data.presetName}</span>
         </a>` : ''}
+        ${sellerCard}
       </div>` : '';
 
     document.getElementById('mainContent').innerHTML = `
