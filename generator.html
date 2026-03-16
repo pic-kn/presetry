@@ -488,6 +488,14 @@ async function checkPw() {
 
   <div class="divider"></div>
 
+  <!-- 編集モードバナー -->
+  <div id="editModeNote" style="display:none;margin-bottom:16px;padding:14px 16px;background:rgba(62,126,154,0.07);border:1px solid rgba(62,126,154,0.25);border-radius:4px;">
+    <p style="font-size:12px;color:var(--accent);letter-spacing:0.05em;line-height:1.8;">
+      ✎ 編集モード — テキスト情報のみ変更する場合はそのまま「変更を保存する」を押してください。<br>
+      Before/Afterをアップロードした場合は、既存のLUTと累積平均して精度を高めます。
+    </p>
+  </div>
+
   <!-- Generate -->
   <button class="generate-btn" id="generateBtn">ページを生成する</button>
 
@@ -525,6 +533,10 @@ async function checkPw() {
 // ── Pair management ──
 let pairCount = 0;
 const pairs = []; // { id, before: ImageData|null, after: ImageData|null }
+
+// 編集モード用
+let editMode = false;      // 編集中かどうか
+let existingCurves = null; // KVから取得した既存LUT
 
 function addPair() {
   pairCount++;
@@ -669,6 +681,16 @@ function computeLUTFromPairs(validPairs) {
   return { red: redCurve, green: greenCurve, blue: blueCurve };
 }
 
+// ── LUT累積平均マージ ──
+function mergeCurves(existing, newCurves) {
+  const merge = (a, b) => a.map((pt, i) => [pt[0], Math.round((pt[1] + b[i][1]) / 2)]);
+  return {
+    red:   merge(existing.red,   newCurves.red),
+    green: merge(existing.green, newCurves.green),
+    blue:  merge(existing.blue,  newCurves.blue),
+  };
+}
+
 // ── Generate page ──
 // localStorageからusernameを復元
 window.addEventListener('DOMContentLoaded', () => {
@@ -697,7 +719,9 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
   if (!presetName) { alert('プリセット名を入力してください'); return; }
 
   const validPairs = pairs.filter(p => p.before && p.after);
-  if (validPairs.length < 1) { alert('Before/After ペアを少なくとも1組アップロードしてください'); return; }
+  // 編集モードでは画像なしでもOK（既存LUTを使用）
+  if (!editMode && validPairs.length < 1) { alert('Before/After ペアを少なくとも1組アップロードしてください'); return; }
+  if (editMode && validPairs.length < 1 && !existingCurves) { alert('既存のLUTデータがありません。Before/Afterペアをアップロードしてください'); return; }
 
   // Show progress
   const progressEl = document.getElementById('progressEl');
@@ -707,7 +731,7 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
   document.getElementById('resultEl').classList.remove('visible');
   document.getElementById('generateBtn').disabled = true;
 
-  progressLabel.textContent = `${validPairs.length}ペアの画像からLUTを計算中...`;
+  progressLabel.textContent = validPairs.length > 0 ? `${validPairs.length}ペアの画像からLUTを計算中...` : 'テキスト情報を更新中...';
   progressBar.style.width = '30%';
 
   await new Promise(r => setTimeout(r, 50)); // let UI update
@@ -721,7 +745,18 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
   }, 30000); // 30秒タイムアウト
 
   try {
-    curves = computeLUTFromPairs(validPairs);
+    if (validPairs.length > 0) {
+      const newCurves = computeLUTFromPairs(validPairs);
+      if (editMode && existingCurves) {
+        // 既存LUTと新LUTを累積平均
+        curves = mergeCurves(existingCurves, newCurves);
+      } else {
+        curves = newCurves;
+      }
+    } else {
+      // 画像なし編集：既存LUTをそのまま使用
+      curves = existingCurves;
+    }
     savedCurves = curves;
     progressBar.style.width = '70%';
     progressLabel.textContent = 'ページを生成中...';
@@ -795,6 +830,12 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
       if (data.success) {
         status.textContent = data.warning ? `公開完了（警告あり: ${data.warning}）` : '公開完了！';
         urlEl.innerHTML = `<a href="${data.url}" target="_blank" style="color:var(--accent);text-decoration:underline;">${data.url}</a><br><span style="font-size:11px;color:var(--mid);letter-spacing:0.05em;">※ アクセスできない場合は少し時間をおいてお試しください。</span>`;
+        // 編集モードをリセット
+        editMode = false;
+        existingCurves = null;
+        document.getElementById('generateBtn').textContent = 'ページを生成する';
+        const editNote = document.getElementById('editModeNote');
+        if (editNote) editNote.style.display = 'none';
       } else {
         // 詳細なエラー情報を表示
         const errMsg = data.error || '不明なエラー';
@@ -1716,6 +1757,10 @@ async function editPreset(username, presetSlug) {
     const result = await res.json();
     if (!result.success) { status.textContent = 'エラー: ' + result.error; return; }
 
+    // 編集モードをセット
+    editMode = true;
+    existingCurves = result.curves;
+
     // 新規作成タブに切り替えてフォームに値をセット
     document.querySelector('.tab-btn').click();
     document.getElementById('username').value = username;
@@ -1726,7 +1771,12 @@ async function editPreset(username, presetSlug) {
     document.getElementById('presetDesc').value = result.data.presetDesc || '';
     document.getElementById('gaId').value = result.data.gaId || '';
     status.textContent = '';
-    alert('情報を読み込みました。Before/Afterペアを再アップロードして「ページを生成する」を押してください。');
+
+    // 編集モードの案内を表示
+    const generateBtn = document.getElementById('generateBtn');
+    generateBtn.textContent = '変更を保存する';
+    const editNote = document.getElementById('editModeNote');
+    if (editNote) editNote.style.display = 'block';
   } catch(e) {
     status.textContent = 'エラーが発生しました';
   }
