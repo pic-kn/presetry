@@ -115,6 +115,9 @@
   footer p { font-size: 9px; letter-spacing: 0.2em; color: var(--light1); font-family: fot-tsukuardgothic-std, 'Noto Sans JP', sans-serif; text-transform: uppercase; }
   .disclaimer { margin-top: 14px; font-size: 10px; color: rgba(115,160,177,0.5); letter-spacing: 0.08em; line-height: 1.8; }
   .loading { text-align: center; padding: 120px 0; color: var(--light2); font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase; font-family: fot-tsukuardgothic-std, 'Noto Sans JP', sans-serif; }
+  .preset-select-wrap { margin-bottom: 24px; }
+  .preset-select { width: 100%; padding: 10px 16px; border: 1px solid var(--light1); background: white; color: var(--ink); font-size: 12px; font-family: fot-tsukuardgothic-std, 'Noto Sans JP', sans-serif; letter-spacing: 0.1em; cursor: pointer; outline: none; appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%2398B6BE' stroke-width='1.5' fill='none'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 16px center; }
+  .preset-select:focus { border-color: var(--mid); }
   @keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
   @media (max-width: 600px) {
     .wrap { padding: 0 20px; }
@@ -179,10 +182,11 @@
     const { username, presetSlug } = preset;
 
     try {
-      // data.jsonとLUTを並行取得
-      const [dataRes, lutRes] = await Promise.all([
+      // data.json・LUT・プリセット一覧を並行取得
+      const [dataRes, lutRes, presetsRes] = await Promise.all([
         fetch(`/sellers/${username}/${presetSlug}/data.json`),
-        fetch(`${WORKER_URL}/lut?username=${username}&presetSlug=${presetSlug}`)
+        fetch(`${WORKER_URL}/lut?username=${username}&presetSlug=${presetSlug}`),
+        fetch(`${WORKER_URL}/presets?username=${username}`)
       ]);
 
       if (!dataRes.ok || !lutRes.ok) {
@@ -192,6 +196,8 @@
 
       const data = await dataRes.json();
       const curves = await lutRes.json();
+      const presetsData = presetsRes.ok ? await presetsRes.json() : { presets: [] };
+      const presetList = presetsData.presets;
 
       // GAを動的に追加
       if (data.gaId) {
@@ -208,7 +214,7 @@
       // タイトル更新
       document.title = `${data.presetName} — Presetry`;
 
-      renderPage(data, curves);
+      renderPage(data, curves, presetList);
 
     } catch (e) {
       renderError();
@@ -232,8 +238,14 @@
     `;
   }
 
-  function renderPage(data, curves) {
+  function renderPage(data, curves, presetList) {
     const sellerTag = data.sellerName ? ` by ${data.sellerName}` : '';
+    const selectHtml = presetList && presetList.length > 1 ? `
+      <div class="preset-select-wrap">
+        <select class="preset-select" id="presetSelect">
+          ${presetList.map(p => `<option value="${p}" ${p === data.presetSlug ? 'selected' : ''}>${p}</option>`).join('')}
+        </select>
+      </div>` : '';
     const ctaSection = data.purchaseUrl ? `
       <div class="cta-section">
         <div>
@@ -272,6 +284,8 @@
         <input type="file" accept="image/*" id="fileInput">
       </div>
 
+      ${selectHtml}
+
       <div class="viewer" id="viewer">
         <div class="viewer-head">
           <span class="viewer-head-label">Before / After</span>
@@ -295,6 +309,11 @@
             <input type="range" id="intensitySlider" min="0" max="100" value="100">
             <div class="intensity-val" id="intensityLabel">100</div>
           </div>
+          <div class="control-group" style="margin-top:16px;">
+            <label>Brightness</label>
+            <input type="range" id="brightnessSlider" min="-100" max="100" value="0">
+            <div class="intensity-val" id="brightnessLabel">0</div>
+          </div>
         </div>
         <p class="disclaimer">※ これはブラウザ上でのシミュレーションです。実際のLightroom処理とは色・階調が異なります。</p>
       </div>
@@ -304,6 +323,7 @@
       <footer>
         <p>presetry — preset trial experience</p>
         <p>© 2026 ${data.sellerName || ''}</p>
+        <p style="margin-top:8px;"><a href="/for-sellers.html" style="font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--light1);text-decoration:none;border-bottom:1px solid var(--light1);padding-bottom:1px;transition:color 0.2s;" onmouseover="this.style.color='var(--mid)'" onmouseout="this.style.color='var(--light1)'">販売事業者様はこちら</a></p>
       </footer>
     `;
 
@@ -346,6 +366,8 @@
     const resetBtn      = document.getElementById('resetBtn');
     const intensitySlider = document.getElementById('intensitySlider');
     const intensityLabel  = document.getElementById('intensityLabel');
+    const brightnessSlider = document.getElementById('brightnessSlider');
+    const brightnessLabel  = document.getElementById('brightnessLabel');
     const canvas = document.getElementById('processingCanvas');
     const ctx    = canvas.getContext('2d');
 
@@ -387,6 +409,7 @@
     function applyPreset(intensity) {
       if (!originalImageData) return;
       const f = intensity / 100;
+      const brightness = parseInt(brightnessSlider.value) * 1.5;
       const imageData = new ImageData(
         new Uint8ClampedArray(originalImageData.data),
         originalImageData.width,
@@ -394,9 +417,9 @@
       );
       const data = imageData.data;
       for (let i = 0; i < data.length; i += 4) {
-        data[i]   = Math.max(0, Math.min(255, data[i]   + (redLUT[data[i]]   - data[i])   * f));
-        data[i+1] = Math.max(0, Math.min(255, data[i+1] + (greenLUT[data[i+1]] - data[i+1]) * f));
-        data[i+2] = Math.max(0, Math.min(255, data[i+2] + (blueLUT[data[i+2]]  - data[i+2])  * f));
+        data[i]   = Math.max(0, Math.min(255, data[i]   + (redLUT[data[i]]   - data[i])   * f + brightness));
+        data[i+1] = Math.max(0, Math.min(255, data[i+1] + (greenLUT[data[i+1]] - data[i+1]) * f + brightness));
+        data[i+2] = Math.max(0, Math.min(255, data[i+2] + (blueLUT[data[i+2]]  - data[i+2])  * f + brightness));
       }
       ctx.putImageData(imageData, 0, 0);
       imgAfter.src = canvas.toDataURL('image/jpeg', 0.92);
@@ -406,6 +429,11 @@
       const val = parseInt(e.target.value);
       intensityLabel.textContent = val;
       applyPreset(val);
+    });
+
+    brightnessSlider.addEventListener('input', e => {
+      brightnessLabel.textContent = e.target.value;
+      applyPreset(parseInt(intensitySlider.value));
     });
 
     function updateSlider(pos) {
@@ -438,6 +466,14 @@
     }
 
     resetBtn.addEventListener('click', () => { fileInput.value = ''; fileInput.click(); });
+
+    const presetSelect = document.getElementById('presetSelect');
+    if (presetSelect) {
+      presetSelect.addEventListener('change', e => {
+        const { username } = getPresetFromURL();
+        location.href = `/?username=${username}&presetSlug=${e.target.value}`;
+      });
+    }
 
     const ctaBtn = document.getElementById('ctaBtn');
     if (ctaBtn && typeof gtag !== 'undefined') {
