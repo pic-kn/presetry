@@ -1,0 +1,81 @@
+name: Post Commit to Notion
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  post-to-notion:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Extract and post to Notion
+        env:
+          NOTION_API_KEY: ${{ secrets.NOTION_API_KEY }}
+          NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
+        run: |
+          COMMIT_MSG=$(git log -1 --pretty=%B)
+          echo "Commit message:"
+          echo "$COMMIT_MSG"
+
+          KADAI=$(echo "$COMMIT_MSG" | grep -oP '(?<=【課題】)[^\n【]*' | head -1 | xargs)
+          KAIKETSU=$(echo "$COMMIT_MSG" | grep -oP '(?<=【解決】)[^\n【]*' | head -1 | xargs)
+          SHIJI=$(echo "$COMMIT_MSG" | grep -oP '(?<=【指示】)[^\n【]*' | head -1 | xargs)
+
+          echo "課題: $KADAI"
+          echo "解決: $KAIKETSU"
+          echo "指示: $SHIJI"
+
+          if [ -z "$KADAI" ] || [ -z "$KAIKETSU" ] || [ -z "$SHIJI" ]; then
+            echo "Required fields not found in commit message. Skipping Notion post."
+            exit 0
+          fi
+
+          PAYLOAD=$(jq -n \
+            --arg db "$NOTION_DATABASE_ID" \
+            --arg kadai "$KADAI" \
+            --arg kaiketsu "$KAIKETSU" \
+            --arg shiji "$SHIJI" \
+            '{
+              "parent": { "database_id": $db },
+              "properties": {
+                "課題": {
+                  "title": [{ "text": { "content": $kadai } }]
+                },
+                "解決": {
+                  "rich_text": [{ "text": { "content": $kaiketsu } }]
+                },
+                "指示": {
+                  "rich_text": [{ "text": { "content": $shiji } }]
+                },
+                "Status": {
+                  "select": { "name": "Ready" }
+                }
+              }
+            }')
+
+          echo "Sending payload to Notion..."
+          RESPONSE=$(curl -s -w "\n%{http_code}" -X POST https://api.notion.com/v1/pages \
+            -H "Authorization: Bearer $NOTION_API_KEY" \
+            -H "Content-Type: application/json" \
+            -H "Notion-Version: 2022-06-28" \
+            -d "$PAYLOAD")
+
+          HTTP_BODY=$(echo "$RESPONSE" | head -n -1)
+          HTTP_CODE=$(echo "$RESPONSE" | tail -n 1)
+
+          echo "HTTP Status: $HTTP_CODE"
+          echo "Response: $HTTP_BODY"
+
+          if [ "$HTTP_CODE" -ne 200 ]; then
+            echo "Error: Notion API returned status $HTTP_CODE"
+            exit 1
+          fi
+
+          echo "Successfully posted to Notion!"
