@@ -19,6 +19,7 @@ jobs:
         env:
           NOTION_API_KEY: ${{ secrets.NOTION_API_KEY }}
           NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
+          REPO_NAME: ${{ github.repository }}
         run: |
           COMMIT_MSG=$(git log -1 --pretty=%B)
           echo "Commit message:"
@@ -31,6 +32,7 @@ jobs:
           echo "課題: $KADAI"
           echo "解決: $KAIKETSU"
           echo "指示: $SHIJI"
+          echo "リポジトリ: $REPO_NAME"
 
           if [ -z "$KADAI" ] || [ -z "$KAIKETSU" ] || [ -z "$SHIJI" ]; then
             echo "Required fields not found in commit message. Skipping Notion post."
@@ -42,6 +44,7 @@ jobs:
             --arg kadai "$KADAI" \
             --arg kaiketsu "$KAIKETSU" \
             --arg shiji "$SHIJI" \
+            --arg repo "$REPO_NAME" \
             '{
               "parent": { "database_id": $db },
               "properties": {
@@ -53,6 +56,9 @@ jobs:
                 },
                 "指示": {
                   "rich_text": [{ "text": { "content": $shiji } }]
+                },
+                "リポジトリ": {
+                  "rich_text": [{ "text": { "content": $repo } }]
                 },
                 "Status": {
                   "select": { "name": "Ready" }
