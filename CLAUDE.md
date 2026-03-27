@@ -3,7 +3,7 @@
 セッション開始時に必ず以下を実行すること：
 
 ```bash
-git pull origin main
+git pull origin main && python3 scripts/fetch_definitions.py
 ```
 
 ## コミットメッセージのルール
