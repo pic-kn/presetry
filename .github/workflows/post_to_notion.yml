@@ -35,6 +35,9 @@ jobs:
           commit_msg = result.stdout.strip()
           print(f"Commit message: {commit_msg}")
 
+          date_result = subprocess.run(["git", "log", "-1", "--pretty=%aI"], capture_output=True, text=True)
+          commit_date = date_result.stdout.strip()
+
           def extract(tag, text):
               m = re.search(f"(?<={tag})[^\n\u3010\u300e\u300f]*", text)
               return m.group(0).strip() if m else ""
@@ -70,7 +73,8 @@ jobs:
                   "\u624b\u4f5c\u696d": {"rich_text": [{"text": {"content": tejigyo}}]},
                   "\u30d7\u30ed\u30b8\u30a7\u30af\u30c8": {"rich_text": [{"text": {"content": project}}]},
                   "\u30ea\u30dd\u30b8\u30c8\u30ea": {"rich_text": [{"text": {"content": REPO_NAME}}]},
-                  "Status": {"select": {"name": "Ready"}}
+                  "Status": {"select": {"name": "Ready"}},
+                  "\u65e5\u4ed8": {"date": {"start": commit_date}}
               }
           }
 
