@@ -45,3 +45,17 @@ git pull origin main
 - `pic-kn/color-memo`
 
 上記リポジトリはこのリポジトリと同じNotionデータベースを共有しており、`sync_to_repos.yml` によってCLAUDE.mdとpost_to_notion.ymlが自動的に最新版に保たれる。
+
+## 定義
+
+定義が生まれたタイミングでここに追記すること。pushをトリガーにNotionの定義DBへ自動同期される。
+
+### ルール
+- 既存の定義の変更・削除にはユーザーの承認が必要
+- 新規追加はClaudeが判断して追記可能
+
+### 定義一覧
+
+| 定義名 | カテゴリ | 内容 | 事例 |
+|---|---|---|---|
+| GitHubシークレットの登録 | 手作業 | セキュリティ上APIでの自動化が不可能なため、唯一避けられない手作業 | NOTION_API_KEY、SYNC_PAT、NOTION_PROJECT_DB_ID、NOTION_DEFINITION_DB_IDの登録 |
