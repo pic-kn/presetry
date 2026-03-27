@@ -38,6 +38,7 @@ git pull origin main
 | `post_to_notion.yml` | mainへのpush | コミットメッセージを解析してNotionに登録 |
 | `post_to_x.yml` | 毎日20:00 JST | NotionのReadyアイテムをXに投稿 |
 | `sync_to_repos.yml` | mainへのpush（CLAUDE.mdまたはpost_to_notion.yml変更時） | presetryとcolor-memoへ自動同期 |
+| `sync_definitions.yml` | mainへのpush（CLAUDE.md変更時） | 定義一覧をNotionの定義DBへ自動同期 |
 
 ## 連携リポジトリ
 
