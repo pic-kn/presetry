@@ -74,7 +74,7 @@ jobs:
                   "\u30d7\u30ed\u30b8\u30a7\u30af\u30c8": {"rich_text": [{"text": {"content": project}}]},
                   "\u30ea\u30dd\u30b8\u30c8\u30ea": {"rich_text": [{"text": {"content": REPO_NAME}}]},
                   "Status": {"select": {"name": "Ready"}},
-                  "\u65e5\u4ed8": {"date": {"start": commit_date}}
+                  "\u4f5c\u6210\u65e5": {"date": {"start": commit_date}}
               }
           }
 
