@@ -64,3 +64,4 @@ git pull origin main && python3 scripts/fetch_definitions.py
 | GitHubシークレットの登録 | 手作業 | 共通 | セキュリティ上APIでの自動化が不可能なため、唯一避けられない手作業 | NOTION_API_KEY、SYNC_PAT、NOTION_PROJECT_DB_ID、NOTION_DEFINITION_DB_IDの登録 |
 | 課題ドリブン設計 | 設計思想 | 共通 | 最初から全部設計しない。必要になったら作る。課題に出くわしたときだけ解決策を追加していく進め方 | 仮想チームを先に設計するより、実際の課題が出たときに必要なエージェントだけ追加する |
 | 文脈のリポジトリ内包 | 構造 | 共通 | リポジトリを開いた時点で何の話をするかが決まる。誰に頼むか・何の担当かを意識しなくていい | ai-prompt-builderを開けばプロンプト管理の話、color-memoを開けば色管理の話になる |
+| Notionが定義のソース | 構造 | 共通 | Notionが定義の管理元でCLAUDE.mdはその鏡。セッション開始時にNotionから取得してCLAUDE.mdを自動更新する | 定義を追加するとNotionに同期され、次のセッションでCLAUDE.mdに反映される |
