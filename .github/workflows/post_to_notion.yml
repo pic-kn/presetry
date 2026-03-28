@@ -100,7 +100,7 @@ jobs:
           check_res = requests.post(
               f"https://api.notion.com/v1/databases/{NOTION_PROJECT_DB_ID}/query",
               headers=notion_headers,
-              json={"filter": {"property": "名前", "title": {"equals": project}}, "page_size": 1}
+              json={"filter": {"property": "プロジェクト名", "title": {"equals": project}}, "page_size": 1}
           )
 
           if check_res.status_code == 200 and not check_res.json().get("results"):
@@ -110,8 +110,8 @@ jobs:
                   json={
                       "parent": {"database_id": NOTION_PROJECT_DB_ID},
                       "properties": {
-                          "名前": {"title": [{"text": {"content": project}}]},
-                          "ステータス": {"status": {"name": "進行中"}}
+                          "プロジェクト名": {"title": [{"text": {"content": project}}]},
+                          "ステータス": {"status": {"name": "未着手"}}
                       }
                   }
               )
