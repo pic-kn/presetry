@@ -42,6 +42,7 @@ python3 scripts/fetch_definitions.py
 - 【指示】は「ユーザーの言葉（抽象）→Claudeが具体化した内容」の形式で書くこと
 - この形式に従うことで、GitHub ActionsがNotionに自動蓄積し、毎日20:00 JSTにXへ自動投稿される
 - 定義を追加してpushした直後は `python3 scripts/fetch_definitions.py` を実行して最新の定義を取得すること
+- PRをマージする際は必ず**rebaseマージ**を使うこと。squashマージはコミットメッセージが失われNotionに蓄積されないため禁止
 
 ### 【プロジェクト】名の命名ルール
 
