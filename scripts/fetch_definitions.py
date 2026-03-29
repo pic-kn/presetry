@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-# v1.1
+# v2.0
 """
-セッション開始時にNotionの定義DBからデータを取得してCLAUDE.mdを更新するスクリプト
+Notionの定義DBからデータを取得して標準出力するスクリプト
+（CLAUDE.mdへの書き戻しは行わない）
 """
 import os
-import re
 import requests
 
 NOTION_API_KEY = os.environ.get("NOTION_API_KEY")
@@ -20,7 +20,6 @@ headers = {
     "Notion-Version": "2022-06-28"
 }
 
-# Notionから定義を全件取得
 res = requests.post(
     f"https://api.notion.com/v1/databases/{NOTION_DEFINITION_DB_ID}/query",
     headers=headers,
@@ -62,31 +61,10 @@ for page in pages:
             "example": example
         })
 
-print(f"{len(definitions)}件の定義を取得")
-
-# CLAUDE.mdの定義テーブルを更新
-claude_path = os.path.join(os.path.dirname(__file__), "..", "CLAUDE.md")
-with open(claude_path, "r") as f:
-    claude_text = f.read()
-
-# 新しいテーブルを生成
-header = "| 定義名 | カテゴリ | スコープ | 内容 | 事例 |"
-separator = "|---|---|---|---|---|"
-rows = [f"| {d['name']} | {d['category']} | {d['scope']} | {d['content']} | {d['example']} |"
-        for d in definitions]
-new_table = "\n".join([header, separator] + rows)
-
-# 定義一覧セクションのテーブルを置換
-new_text = re.sub(
-    r"(### 定義一覧\n\n)\|.*?\n\|[-| ]+\|\n(?:\|.*?\n)*",
-    lambda m: m.group(1) + new_table + "\n",
-    claude_text,
-    flags=re.DOTALL
-)
-
-if new_text == claude_text:
-    print("変更なし")
-else:
-    with open(claude_path, "w") as f:
-        f.write(new_text)
-    print("CLAUDE.mdの定義テーブルを更新しました")
+print(f"\n=== 定義一覧（{len(definitions)}件）===")
+for d in definitions:
+    print(f"\n【{d['name']}】")
+    print(f"  カテゴリ: {d['category']} / スコープ: {d['scope']}")
+    print(f"  内容: {d['content']}")
+    if d['example']:
+        print(f"  事例: {d['example']}")
