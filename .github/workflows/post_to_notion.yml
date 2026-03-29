@@ -111,7 +111,7 @@ jobs:
                       "parent": {"database_id": NOTION_PROJECT_DB_ID},
                       "properties": {
                           "プロジェクト名": {"title": [{"text": {"content": project}}]},
-                          "ステータス": {"status": {"name": "未着手"}}
+                          "ステータス": {"status": {"name": "進行中"}}
                       }
                   }
               )
