@@ -48,6 +48,21 @@ git pull origin main
 - 新しいプロジェクトを開始する場合のみ新しいプロジェクト名をつける
 - プロジェクト名はIssueの作業メモに「現在のプロジェクト名：〇〇」として明記しておくこと
 
+## Notionデータ修正ルール
+
+Notionのデータに不整合が生じた場合、`fix_notion_data.yml`を使って修正する。
+
+### 運用ルール
+- ユーザーはinputsを手入力しない。**Claudeがワークフロー上部の変数セクションを書き換えてpushし、ユーザーはRun workflowを押すだけ**
+- 変数セクションは `fix_notion_data.yml` の `env:` ブロック内にある
+- 修正が終わったら変数セクションを次回用にリセットしておく（必須ではないが推奨）
+
+### 変数の意味
+- `MODE`: `update`（既存修正）または `create`（新規作成）
+- `DATABASE`: `commit_log`（コミットログDB）または `project`（プロジェクト管理DB）
+- updateモード: `FILTER_PROPERTY/VALUE`で対象を絞り込み、`UPDATE_PROPERTY/VALUE`で値を更新
+- createモード: `CREATE_PROJECT_NAME`と`CREATE_STATUS`で新規プロジェクトを作成
+
 ## ワークフロー構成
 
 | ファイル | トリガー | 役割 |
