@@ -206,14 +206,20 @@
     .upload-zone { padding: 40px 16px; margin-bottom: 36px; }
     .upload-note { font-size: 9px; }
     .viewer { margin-bottom: 36px; }
-    .viewer-head { align-items: flex-start; flex-direction: column; gap: 12px; }
+    .viewer-head { display: grid; grid-template-columns: 1fr auto; gap: 10px 12px; align-items: center; }
+    .viewer-head-label { letter-spacing: 0.22em; }
+    .reset-btn { font-size: 8px; letter-spacing: 0.12em; white-space: nowrap; }
     .compare-tabs { width: 100%; min-width: 0; }
-    .compare-tab { padding: 0 6px; letter-spacing: 0.1em; }
-    .comparison-wrap { aspect-ratio: 4/5; }
-    .comparison-wrap.mode-stack { grid-template-columns: 1fr; gap: 10px; }
-    .comparison-wrap.mode-stack img { aspect-ratio: 4/5; }
-    .comparison-wrap.mode-stack .label-after { left: 12px; top: calc(50% + 17px); }
-    .controls { grid-template-columns: 1fr; gap: 18px; padding: 16px; }
+    .compare-tabs { grid-column: 1 / -1; }
+    .compare-tab { min-height: 28px; padding: 0 5px; letter-spacing: 0.08em; font-size: 8px; }
+    .comparison-wrap { aspect-ratio: 3/2; }
+    .comparison-wrap.mode-stack { grid-template-columns: 1fr 1fr; gap: 1px; }
+    .comparison-wrap.mode-stack img { aspect-ratio: 3/2; }
+    .comparison-wrap.mode-stack .label-after { left: calc(50% + 13px); top: 12px; }
+    .slider-handle { width: 40px; height: 40px; }
+    .drag-hint { bottom: 12px; min-height: 26px; padding: 6px 12px; font-size: 8px; }
+    .controls { grid-template-columns: 1fr 1fr; gap: 12px; padding: 14px; }
+    .control-top { margin-bottom: 10px; }
     .seller-section { padding: 32px 0 28px; }
     .seller-card { padding: 20px; }
     footer { flex-direction: column; gap: 6px; padding: 18px 0 32px; }
