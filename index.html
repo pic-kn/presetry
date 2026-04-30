@@ -86,25 +86,42 @@
   .upload-note { display: block; margin-top: 16px; font-size: 10px; color: rgba(115,160,177,0.6); letter-spacing: 0.08em; line-height: 1.9; }
   .viewer { display: none; margin-bottom: 56px; }
   .viewer.active { display: block; }
-  .viewer-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+  .viewer-head { display: flex; justify-content: space-between; align-items: center; gap: 18px; margin-bottom: 14px; }
   .viewer-head-label { font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--light2); font-family: fot-tsukuardgothic-std, 'Noto Sans JP', sans-serif; }
+  .compare-tabs { display: inline-grid; grid-template-columns: repeat(4, 1fr); gap: 2px; border: 1px solid var(--light1); background: rgba(252,252,252,0.72); padding: 2px; min-width: 280px; }
+  .compare-tab { min-height: 30px; padding: 0 10px; border: 0; background: transparent; color: var(--mid); cursor: pointer; font-family: fot-tsukuardgothic-std, 'Noto Sans JP', sans-serif; font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; transition: background 0.25s ease, color 0.25s ease; }
+  .compare-tab:hover { color: var(--accent); }
+  .compare-tab.active { background: var(--accent); color: var(--base); }
   .reset-btn { font-size: 9px; letter-spacing: 0.2em; color: var(--light2); background: none; border: none; cursor: pointer; font-family: fot-tsukuardgothic-std, 'Noto Sans JP', sans-serif; text-transform: uppercase; text-decoration: underline; text-underline-offset: 3px; transition: color 0.3s; }
   .reset-btn:hover { color: var(--accent); }
-  .comparison-wrap { position: relative; overflow: hidden; user-select: none; cursor: ew-resize; aspect-ratio: 3/2; background: var(--light1); touch-action: none; }
+  .comparison-wrap { position: relative; overflow: hidden; user-select: none; cursor: ew-resize; aspect-ratio: 3/2; background: var(--light1); touch-action: none; box-shadow: 0 20px 48px rgba(30,44,51,0.10); }
   .comparison-wrap img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; -webkit-touch-callout: none; user-select: none; }
-  .img-after { clip-path: inset(0 50% 0 0); }
-  .slider-line { position: absolute; top: 0; bottom: 0; left: 50%; width: 1px; background: rgba(252,252,252,0.7); transform: translateX(-50%); pointer-events: none; }
-  .slider-handle { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 32px; height: 32px; border: 1px solid rgba(252,252,252,0.6); background: rgba(62,126,154,0.6); display: flex; align-items: center; justify-content: center; pointer-events: none; backdrop-filter: blur(4px); }
-  .slider-handle svg { width: 12px; height: 12px; color: var(--base); }
-  .label-before, .label-after { position: absolute; bottom: 14px; font-size: 8px; letter-spacing: 0.25em; text-transform: uppercase; font-family: fot-tsukuardgothic-std, 'Noto Sans JP', sans-serif; color: rgba(252,252,252,0.6); pointer-events: none; }
+  .img-after { clip-path: inset(0 0 0 50%); }
+  .slider-line { position: absolute; top: 0; bottom: 0; left: 50%; width: 1px; background: rgba(252,252,252,0.86); transform: translateX(-50%); pointer-events: none; box-shadow: 0 0 0 1px rgba(30,44,51,0.08); }
+  .slider-handle { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 46px; height: 46px; border: 1px solid rgba(252,252,252,0.78); border-radius: 50%; background: rgba(30,44,51,0.54); display: flex; align-items: center; justify-content: center; pointer-events: none; backdrop-filter: blur(8px); box-shadow: 0 12px 28px rgba(30,44,51,0.24); }
+  .slider-handle svg { width: 18px; height: 18px; color: var(--base); }
+  .compare-label { position: absolute; top: 14px; z-index: 2; display: inline-flex; align-items: center; min-height: 28px; padding: 0 12px; border: 1px solid rgba(252,252,252,0.34); border-radius: 999px; background: rgba(30,44,51,0.36); color: rgba(252,252,252,0.88); backdrop-filter: blur(8px); font-size: 8px; letter-spacing: 0.22em; text-transform: uppercase; font-family: fot-tsukuardgothic-std, 'Noto Sans JP', sans-serif; pointer-events: none; }
   .label-before { left: 14px; }
-  .label-after  { right: 14px; }
+  .label-after { right: 14px; }
+  .drag-hint { position: absolute; left: 50%; bottom: 18px; transform: translateX(-50%); z-index: 3; min-height: 30px; padding: 8px 14px; border: 1px solid rgba(252,252,252,0.32); border-radius: 999px; background: rgba(30,44,51,0.42); color: rgba(252,252,252,0.86); backdrop-filter: blur(8px); font-size: 9px; letter-spacing: 0.14em; white-space: nowrap; pointer-events: none; transition: opacity 0.35s ease, transform 0.35s ease; }
+  .comparison-wrap.hint-hidden .drag-hint { opacity: 0; transform: translate(-50%, 8px); }
+  .comparison-wrap.mode-before, .comparison-wrap.mode-after, .comparison-wrap.mode-stack { cursor: default; touch-action: pan-y; }
+  .comparison-wrap.mode-before .img-after, .comparison-wrap.mode-before .slider-line, .comparison-wrap.mode-before .slider-handle, .comparison-wrap.mode-before .label-after, .comparison-wrap.mode-before .drag-hint { display: none; }
+  .comparison-wrap.mode-after .img-before, .comparison-wrap.mode-after .slider-line, .comparison-wrap.mode-after .slider-handle, .comparison-wrap.mode-after .label-before, .comparison-wrap.mode-after .drag-hint { display: none; }
+  .comparison-wrap.mode-after .img-after { clip-path: none; }
+  .comparison-wrap.mode-stack { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; aspect-ratio: auto; background: var(--base); cursor: default; box-shadow: none; }
+  .comparison-wrap.mode-stack img { position: static; width: 100%; aspect-ratio: 3/2; height: auto; clip-path: none; object-fit: cover; }
+  .comparison-wrap.mode-stack .slider-line, .comparison-wrap.mode-stack .slider-handle, .comparison-wrap.mode-stack .drag-hint { display: none; }
+  .comparison-wrap.mode-stack .compare-label { top: 12px; }
+  .comparison-wrap.mode-stack .label-before { left: 12px; }
+  .comparison-wrap.mode-stack .label-after { left: calc(50% + 13px); right: auto; }
   #processingCanvas { display: none; }
-  .controls { margin-top: 20px; }
-  .control-group label { display: block; font-size: 9px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--light2); font-family: fot-tsukuardgothic-std, 'Noto Sans JP', sans-serif; margin-bottom: 10px; }
+  .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-top: 22px; padding: 18px; border: 1px solid var(--light1); background: rgba(252,252,252,0.62); }
+  .control-top { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+  .control-group label { display: block; font-size: 9px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--light2); font-family: fot-tsukuardgothic-std, 'Noto Sans JP', sans-serif; }
   .control-group input[type=range] { width: 100%; -webkit-appearance: none; height: 1px; background: var(--light1); outline: none; cursor: pointer; touch-action: pan-x; }
-  .control-group input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); cursor: pointer; }
-  .intensity-val { font-size: 10px; color: var(--light2); text-align: right; margin-top: 6px; font-family: fot-tsukuardgothic-std, 'Noto Sans JP', sans-serif; letter-spacing: 0.1em; }
+  .control-group input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; border: 3px solid var(--base); background: var(--accent); cursor: pointer; box-shadow: 0 4px 12px rgba(30,44,51,0.18); }
+  .intensity-val { font-size: 10px; color: var(--mid); text-align: right; font-family: fot-tsukuardgothic-std, 'Noto Sans JP', sans-serif; letter-spacing: 0.1em; }
   /* ── Seller Card ── */
   .seller-section { border-top: 1px solid var(--light1); padding: 52px 0 48px; }
   .cta-btn { margin-bottom: 16px; }
@@ -189,6 +206,14 @@
     .upload-zone { padding: 40px 16px; margin-bottom: 36px; }
     .upload-note { font-size: 9px; }
     .viewer { margin-bottom: 36px; }
+    .viewer-head { align-items: flex-start; flex-direction: column; gap: 12px; }
+    .compare-tabs { width: 100%; min-width: 0; }
+    .compare-tab { padding: 0 6px; letter-spacing: 0.1em; }
+    .comparison-wrap { aspect-ratio: 4/5; }
+    .comparison-wrap.mode-stack { grid-template-columns: 1fr; gap: 10px; }
+    .comparison-wrap.mode-stack img { aspect-ratio: 4/5; }
+    .comparison-wrap.mode-stack .label-after { left: 12px; top: calc(50% + 17px); }
+    .controls { grid-template-columns: 1fr; gap: 18px; padding: 16px; }
     .seller-section { padding: 32px 0 28px; }
     .seller-card { padding: 20px; }
     footer { flex-direction: column; gap: 6px; padding: 18px 0 32px; }
@@ -231,6 +256,29 @@
     blue:  [[0,0],[16,24],[32,46],[48,70],[64,98],[80,128],[96,154],[112,174],[128,192],[144,207],[160,220],[176,230],[192,238],[208,244],[224,249],[240,253],[255,255]]
   };
 
+  function escapeHTML(value) {
+    return String(value ?? '').replace(/[&<>"']/g, ch => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;'
+    }[ch]));
+  }
+
+  function safeURL(value) {
+    try {
+      const url = new URL(String(value ?? ''), location.href);
+      return ['http:', 'https:'].includes(url.protocol) ? url.href : '';
+    } catch {
+      return '';
+    }
+  }
+
+  function isSafeSlug(value) {
+    return /^[a-z0-9-]+$/.test(String(value ?? ''));
+  }
+
   // URLからusername・presetSlugを取得
   // パス形式: /sellers/username/presetSlug/
   // パラメータ形式: /?username=xxx&presetSlug=xxx
@@ -264,6 +312,10 @@
     }
 
     const { username, presetSlug } = preset;
+    if (!isSafeSlug(username) || !isSafeSlug(presetSlug)) {
+      renderError();
+      return;
+    }
 
     try {
       // data.json・LUT・プリセット一覧を並行取得
@@ -281,7 +333,9 @@
       const data = await dataRes.json();
       const curves = await lutRes.json();
       const presetsData = presetsRes.ok ? await presetsRes.json() : { presets: [] };
-      const presetList = presetsData.presets;
+      const presetList = Array.isArray(presetsData.presets)
+        ? presetsData.presets.filter(isSafeSlug)
+        : [];
 
       // GAを動的に追加
       if (data.gaId) {
@@ -323,11 +377,14 @@
   }
 
   function renderPage(data, curves, presetList, currentPresetSlug) {
-    const sellerTag = data.sellerName ? ` by ${data.sellerName}` : '';
+    const presetName = escapeHTML(data.presetName || currentPresetSlug);
+    const sellerName = escapeHTML(data.sellerName || '');
+    const presetDesc = escapeHTML(data.presetDesc || '');
+    const sellerTag = sellerName ? ` by ${sellerName}` : '';
     const selectHtml = presetList && presetList.length >= 1 ? `
       <div class="preset-select-wrap">
         <select class="preset-select" id="presetSelect">
-          ${presetList.map(p => `<option value="${p}" ${p === currentPresetSlug ? 'selected' : ''}>${p}</option>`).join('')}
+          ${presetList.map(p => `<option value="${escapeHTML(p)}" ${p === currentPresetSlug ? 'selected' : ''}>${escapeHTML(p)}</option>`).join('')}
         </select>
       </div>` : '';
     // SNSリンクHTML生成
@@ -341,23 +398,25 @@
           const type = s.type || 'other';
           const icon = snsIcons[type] || snsIcons.other;
           const label = type === 'instagram' ? 'Instagram' : type === 'x' ? 'X' : s.label || 'Link';
-          return `<a href="${s.url}" target="_blank" rel="noopener" class="sns-link">${icon}${label}</a>`;
+          const href = safeURL(s.url);
+          if (!href) return '';
+          return `<a href="${escapeHTML(href)}" target="_blank" rel="noopener" class="sns-link">${icon}${escapeHTML(label)}</a>`;
         }).join('')
       : '';
 
     const sellerCard = (data.sellerName || data.presetDesc || snsLinksHtml) ? `
       <div class="seller-card">
-        ${data.sellerName ? `<div class="seller-card-header"><span class="seller-name">${data.sellerName}</span><span class="seller-tag">Seller</span></div>` : ''}
-        ${data.presetDesc ? `<p class="seller-desc">${data.presetDesc}</p>` : ''}
+        ${data.sellerName ? `<div class="seller-card-header"><span class="seller-name">${sellerName}</span><span class="seller-tag">Seller</span></div>` : ''}
+        ${data.presetDesc ? `<p class="seller-desc">${presetDesc}</p>` : ''}
         ${snsLinksHtml ? `<div class="sns-links">${snsLinksHtml}</div>` : ''}
       </div>` : '';
 
     const ctaSection = (data.purchaseUrl || sellerCard) ? `
       <div class="seller-section">
-        ${data.purchaseUrl ? `
-        <a href="${data.purchaseUrl}" target="_blank" rel="noopener" class="cta-btn" id="ctaBtn">
+        ${safeURL(data.purchaseUrl) ? `
+        <a href="${escapeHTML(safeURL(data.purchaseUrl))}" target="_blank" rel="noopener" class="cta-btn" id="ctaBtn">
           購入する
-          <span class="cta-price">${data.presetName}</span>
+          <span class="cta-price">${presetName}</span>
         </a>` : ''}
         ${sellerCard}
       </div>` : '';
@@ -365,7 +424,7 @@
     document.getElementById('mainContent').innerHTML = `
       <section class="hero">
         <span class="hero-en">あなたの写真で、<br>試してみてください。</span>
-        <span class="preset-chip">Now playing — ${data.presetName}${sellerTag}</span>
+        <span class="preset-chip">Now playing — ${presetName}${sellerTag}</span>
         <p class="hero-desc">写真をアップロードして、<br>このプリセットの世界観を体感してください。</p>
       </section>
 
@@ -392,30 +451,41 @@
       <div class="viewer" id="viewer">
         <div class="viewer-head">
           <span class="viewer-head-label">Before / After</span>
+          <div class="compare-tabs" id="compareTabs" aria-label="比較モード">
+            <button class="compare-tab active" type="button" data-mode="split">Split</button>
+            <button class="compare-tab" type="button" data-mode="before">Before</button>
+            <button class="compare-tab" type="button" data-mode="after">After</button>
+            <button class="compare-tab" type="button" data-mode="stack">Stack</button>
+          </div>
           <button class="reset-btn" id="resetBtn">別の写真を使う</button>
         </div>
-        <div class="comparison-wrap" id="comparisonWrap">
-          <img id="imgBefore" src="" alt="Before">
-          <img id="imgAfter" src="" alt="After">
+        <div class="comparison-wrap mode-split" id="comparisonWrap">
+          <img class="img-before" id="imgBefore" src="" alt="Before">
+          <img class="img-after" id="imgAfter" src="" alt="After">
           <div class="slider-line" id="sliderLine"></div>
           <div class="slider-handle" id="sliderHandle">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
               <path d="M8 9l-4 3 4 3M16 9l4 3-4 3"/>
             </svg>
           </div>
-          <div class="label-before">Before</div>
-          <div class="label-after">After</div>
+          <div class="compare-label label-before">Before</div>
+          <div class="compare-label label-after">After</div>
+          <div class="drag-hint" id="dragHint">左右にドラッグして比較</div>
         </div>
         <div class="controls">
           <div class="control-group">
-            <label>Intensity</label>
+            <div class="control-top">
+              <label>Intensity</label>
+              <div class="intensity-val" id="intensityLabel">100</div>
+            </div>
             <input type="range" id="intensitySlider" min="0" max="100" value="100">
-            <div class="intensity-val" id="intensityLabel">100</div>
           </div>
-          <div class="control-group" style="margin-top:16px;">
-            <label>Brightness</label>
+          <div class="control-group">
+            <div class="control-top">
+              <label>Brightness</label>
+              <div class="intensity-val" id="brightnessLabel">0</div>
+            </div>
             <input type="range" id="brightnessSlider" min="-100" max="100" value="0">
-            <div class="intensity-val" id="brightnessLabel">0</div>
           </div>
         </div>
         <p class="disclaimer">※ これはブラウザ上でのシミュレーションです。実際のLightroom処理とは色・階調が異なります。</p>
@@ -425,13 +495,13 @@
 
       <footer>
         <p>presetry — preset trial experience</p>
-        <p>© 2026 ${data.sellerName || ''}</p>
+        <p>© 2026 ${sellerName}</p>
         <p style="margin-top:8px;"><a href="/for-sellers.html" style="font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--light1);text-decoration:none;border-bottom:1px solid var(--light1);padding-bottom:1px;transition:color 0.2s;" onmouseover="this.style.color='var(--mid)'" onmouseout="this.style.color='var(--light1)'">販売事業者様はこちら</a></p>
       </footer>
     `;
 
     // LUTを構築してインタラクションを初期化
-    initInteraction(curves, data.presetName);
+    initInteraction(curves, data.presetName || currentPresetSlug);
   }
 
   function initInteraction(curves, presetName) {
@@ -471,6 +541,8 @@
     const intensityLabel  = document.getElementById('intensityLabel');
     const brightnessSlider = document.getElementById('brightnessSlider');
     const brightnessLabel  = document.getElementById('brightnessLabel');
+    const compareTabs = document.getElementById('compareTabs');
+    const dragHint = document.getElementById('dragHint');
     const canvas = document.getElementById('processingCanvas');
     const ctx    = canvas.getContext('2d');
 
@@ -501,6 +573,7 @@
           applyPreset(100);
           uploadZone.style.display = 'none';
           viewer.classList.add('active');
+          setCompareMode('split');
           updateSlider(50);
           if (typeof gtag !== 'undefined') gtag('event', 'photo_upload', { event_category: 'engagement' });
         };
@@ -547,15 +620,46 @@
       imgAfter.style.clipPath = `inset(0 0 0 ${sliderPos}%)`;
     }
 
+    function setCompareMode(mode) {
+      comparisonWrap.classList.remove('mode-split', 'mode-before', 'mode-after', 'mode-stack');
+      comparisonWrap.classList.add(`mode-${mode}`);
+      compareTabs.querySelectorAll('.compare-tab').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.mode === mode);
+      });
+      if (mode === 'split') {
+        updateSlider(sliderPos);
+      } else if (mode === 'after' || mode === 'stack') {
+        imgAfter.style.clipPath = 'none';
+      }
+      if (mode !== 'split') comparisonWrap.classList.add('hint-hidden');
+      if (typeof gtag !== 'undefined') {
+        gtag('event', 'comparison_mode_change', { event_category: 'engagement', event_label: mode });
+      }
+    }
+
+    compareTabs.addEventListener('click', e => {
+      const btn = e.target.closest('.compare-tab');
+      if (!btn) return;
+      setCompareMode(btn.dataset.mode);
+    });
+
+    function hideDragHint() {
+      comparisonWrap.classList.add('hint-hidden');
+    }
+
     let sliderUsed = false;
     comparisonWrap.addEventListener('mousedown', e => {
+      if (!comparisonWrap.classList.contains('mode-split')) return;
       isDragging = true;
       handleMove(e);
+      hideDragHint();
       if (!sliderUsed) { sliderUsed = true; if (typeof gtag !== 'undefined') gtag('event', 'comparison_slider_used', { event_category: 'engagement' }); }
     });
     comparisonWrap.addEventListener('touchstart', e => {
+      if (!comparisonWrap.classList.contains('mode-split')) return;
       isDragging = true;
       handleMove(e.touches[0]);
+      hideDragHint();
       if (!sliderUsed) { sliderUsed = true; if (typeof gtag !== 'undefined') gtag('event', 'comparison_slider_used', { event_category: 'engagement' }); }
     });
     document.addEventListener('mousemove', e => { if (isDragging) handleMove(e); });
@@ -566,6 +670,54 @@
     function handleMove(e) {
       const rect = comparisonWrap.getBoundingClientRect();
       updateSlider(((e.clientX - rect.left) / rect.width) * 100);
+    }
+
+    function loadPreviewSample() {
+      if (!PREVIEW_MODE) return;
+      const width = 900;
+      const height = 620;
+      canvas.width = width;
+      canvas.height = height;
+      const gradient = ctx.createLinearGradient(0, 0, width, height);
+      gradient.addColorStop(0, '#d8e6ec');
+      gradient.addColorStop(0.46, '#7aa0aa');
+      gradient.addColorStop(1, '#203540');
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, width, height);
+      ctx.fillStyle = 'rgba(252,252,252,0.72)';
+      ctx.beginPath();
+      ctx.arc(705, 146, 70, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = 'rgba(62,126,154,0.40)';
+      ctx.beginPath();
+      ctx.moveTo(0, 490);
+      ctx.bezierCurveTo(180, 360, 350, 390, 520, 310);
+      ctx.bezierCurveTo(700, 225, 800, 255, 900, 190);
+      ctx.lineTo(900, 620);
+      ctx.lineTo(0, 620);
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = 'rgba(30,44,51,0.32)';
+      ctx.beginPath();
+      ctx.moveTo(0, 620);
+      ctx.bezierCurveTo(210, 470, 420, 510, 640, 405);
+      ctx.bezierCurveTo(770, 345, 840, 355, 900, 322);
+      ctx.lineTo(900, 620);
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = 'rgba(252,252,252,0.18)';
+      for (let i = 0; i < 38; i++) {
+        const x = 60 + i * 22;
+        const y = 110 + Math.sin(i * 0.8) * 26;
+        ctx.fillRect(x, y, 8, 180 + Math.cos(i) * 42);
+      }
+      originalImageData = ctx.getImageData(0, 0, width, height);
+      imgBefore.src = canvas.toDataURL('image/jpeg', 0.92);
+      applyPreset(100);
+      uploadZone.style.display = 'none';
+      viewer.classList.add('active');
+      setCompareMode('split');
+      updateSlider(50);
     }
 
     resetBtn.addEventListener('click', () => { fileInput.value = ''; fileInput.click(); });
@@ -584,6 +736,8 @@
         gtag('event', 'purchase_click', { event_category: 'conversion', event_label: presetName });
       });
     }
+
+    loadPreviewSample();
   }
 
   // ルートアクセス時はデフォルトプリセットにリダイレクト

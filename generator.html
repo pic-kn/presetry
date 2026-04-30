@@ -535,6 +535,29 @@ async function checkPw() {
 <canvas id="canvas"></canvas>
 
 <script>
+function escapeHTML(value) {
+  return String(value ?? '').replace(/[&<>"']/g, ch => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  }[ch]));
+}
+
+function safeURL(value) {
+  try {
+    const url = new URL(String(value ?? ''), location.href);
+    return ['http:', 'https:'].includes(url.protocol) ? url.href : '';
+  } catch {
+    return '';
+  }
+}
+
+function toSlug(value) {
+  return String(value ?? '').trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+}
+
 // ── Pair management ──
 let pairCount = 0;
 const pairs = []; // { id, before: ImageData|null, after: ImageData|null }
@@ -745,7 +768,7 @@ function setSnsLinks(snsLinks) {
         <option value="x" ${s.type==='x'?'selected':''}>X (Twitter)</option>
         <option value="other" ${s.type==='other'?'selected':''}>その他</option>
       </select>
-      <input type="text" id="snsUrl-${idx}" value="${s.url || ''}" placeholder="SNS URL" style="flex:1;padding:12px 16px;border:1px solid var(--light1);background:white;color:var(--ink);font-size:14px;font-family:inherit;border-radius:4px;outline:none;">
+      <input type="text" id="snsUrl-${idx}" value="${escapeHTML(s.url || '')}" placeholder="SNS URL" style="flex:1;padding:12px 16px;border:1px solid var(--light1);background:white;color:var(--ink);font-size:14px;font-family:inherit;border-radius:4px;outline:none;">
       ${isFirst
         ? `<button type="button" onclick="addSnsRow()" style="padding:10px 14px;background:none;border:1px dashed var(--light1);border-radius:4px;font-size:11px;letter-spacing:0.1em;color:var(--mid);cursor:pointer;white-space:nowrap;font-family:inherit;" onmouseover="this.style.borderColor='var(--mid)'" onmouseout="this.style.borderColor='var(--light1)'">+ 追加</button>`
         : `<button type="button" onclick="this.closest('.sns-input-row').remove()" style="padding:10px 14px;background:none;border:1px solid var(--light1);border-radius:4px;font-size:11px;color:var(--light1);cursor:pointer;font-family:inherit;" onmouseover="this.style.color='#c0392b';this.style.borderColor='#c0392b'" onmouseout="this.style.color='var(--light1)';this.style.borderColor='var(--light1)'">削除</button>`
@@ -793,7 +816,7 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 document.getElementById('username').addEventListener('input', function() {
-  const slug = this.value.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+  const slug = toSlug(this.value);
   document.getElementById('usernamePreview').textContent = slug || 'username';
   if (slug) localStorage.setItem('presetry_username', slug);
 });
@@ -859,8 +882,8 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
     progressBar.style.width = '100%';
     progressLabel.textContent = '完了';
 
-  const userSlug   = username.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
-  const presetSlug = presetName.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+  const userSlug   = toSlug(username);
+  const presetSlug = toSlug(presetName);
 
   // presetSlugが空になってしまう場合（日本語名など）は弾く
   if (!userSlug || !presetSlug) {
@@ -871,7 +894,7 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
   }
 
   document.getElementById('resultDesc').innerHTML =
-    `「${presetName}」の試着ページが生成されました。<br><span style="font-size:11px;color:var(--mid);letter-spacing:0.05em;">URL: presetry.com/sellers/<strong>${userSlug}</strong>/<strong>${presetSlug}</strong>/</span>`;
+    `「${escapeHTML(presetName)}」の試着ページが生成されました。<br><span style="font-size:11px;color:var(--mid);letter-spacing:0.05em;">URL: presetry.com/sellers/<strong>${escapeHTML(userSlug)}</strong>/<strong>${escapeHTML(presetSlug)}</strong>/</span>`;
 
   // 公開ボタンの設定
   const publishBtn = document.getElementById('publishBtn');
@@ -915,14 +938,17 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
         data = JSON.parse(rawText);
       } catch {
         status.textContent = `レスポンスのパースに失敗しました (HTTP ${res.status})`;
-        urlEl.innerHTML = `<pre style="font-size:10px;color:#c0392b;text-align:left;white-space:pre-wrap;word-break:break-all;">${rawText.slice(0, 500)}</pre>`;
+        urlEl.innerHTML = `<pre style="font-size:10px;color:#c0392b;text-align:left;white-space:pre-wrap;word-break:break-all;">${escapeHTML(rawText.slice(0, 500))}</pre>`;
         publishBtn.disabled = false;
         return;
       }
 
       if (data.success) {
+        const publishedUrl = safeURL(data.url);
         status.textContent = data.warning ? `公開完了（警告あり: ${data.warning}）` : '公開完了！';
-        urlEl.innerHTML = `<a href="${data.url}" target="_blank" style="color:var(--accent);text-decoration:underline;">${data.url}</a><br><span style="font-size:11px;color:var(--mid);letter-spacing:0.05em;">※ アクセスできない場合は少し時間をおいてお試しください。</span>`;
+        urlEl.innerHTML = publishedUrl
+          ? `<a href="${escapeHTML(publishedUrl)}" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:underline;">${escapeHTML(publishedUrl)}</a><br><span style="font-size:11px;color:var(--mid);letter-spacing:0.05em;">※ アクセスできない場合は少し時間をおいてお試しください。</span>`
+          : '<span style="font-size:11px;color:var(--mid);letter-spacing:0.05em;">公開は完了しましたが、URLを表示できませんでした。</span>';
         // 編集モードをリセット
         resetEditMode();
       } else {
@@ -931,7 +957,7 @@ document.getElementById('generateBtn').addEventListener('click', async () => {
         const errDetail = data.detail ? JSON.stringify(data.detail, null, 2) : '';
         const debugInfo = data._debug ? JSON.stringify(data._debug, null, 2) : '';
         status.textContent = `エラー: ${errMsg}`;
-        urlEl.innerHTML = errDetail || debugInfo ? `<pre style="font-size:10px;color:#c0392b;text-align:left;white-space:pre-wrap;word-break:break-all;margin-top:8px;">${[errDetail, debugInfo].filter(Boolean).join('\n\n').slice(0, 800)}</pre>` : '';
+        urlEl.innerHTML = errDetail || debugInfo ? `<pre style="font-size:10px;color:#c0392b;text-align:left;white-space:pre-wrap;word-break:break-all;margin-top:8px;">${escapeHTML([errDetail, debugInfo].filter(Boolean).join('\n\n').slice(0, 800))}</pre>` : '';
         publishBtn.disabled = false;
       }
     } catch (e) {
@@ -1831,7 +1857,7 @@ function cancelEdit() {
 
 // ── Manage ──
 async function loadPresets() {
-  const username = document.getElementById('manageUsername').value.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+  const username = toSlug(document.getElementById('manageUsername').value);
   if (!username) { alert('ユーザー名を入力してください'); return; }
   const status = document.getElementById('manageStatus');
   const list = document.getElementById('presetList');
@@ -1846,12 +1872,12 @@ async function loadPresets() {
       return;
     }
     status.textContent = '';
-    list.innerHTML = data.presets.map(slug => `
+    list.innerHTML = data.presets.map(toSlug).filter(Boolean).map(slug => `
       <div class="preset-item">
-        <span class="preset-item-name">${slug}</span>
+        <span class="preset-item-name">${escapeHTML(slug)}</span>
         <div class="preset-item-actions">
-          <button class="preset-action-btn" onclick="editPreset('${username}', '${slug}')">編集</button>
-          <button class="preset-action-btn danger" onclick="deletePreset('${username}', '${slug}')">削除</button>
+          <button class="preset-action-btn" onclick="editPreset('${escapeHTML(username)}', '${escapeHTML(slug)}')">編集</button>
+          <button class="preset-action-btn danger" onclick="deletePreset('${escapeHTML(username)}', '${escapeHTML(slug)}')">削除</button>
         </div>
       </div>
     `).join('');

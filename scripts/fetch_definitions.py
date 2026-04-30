@@ -5,7 +5,6 @@ Notionの定義DBからデータを取得して標準出力するスクリプト
 （CLAUDE.mdへの書き戻しは行わない）
 """
 import os
-import requests
 
 NOTION_API_KEY = os.environ.get("NOTION_API_KEY")
 NOTION_DEFINITION_DB_ID = os.environ.get("NOTION_DEFINITION_DB_ID")
@@ -13,6 +12,8 @@ NOTION_DEFINITION_DB_ID = os.environ.get("NOTION_DEFINITION_DB_ID")
 if not NOTION_API_KEY or not NOTION_DEFINITION_DB_ID:
     print("NOTION_API_KEY または NOTION_DEFINITION_DB_ID が未設定のためスキップします")
     exit(0)
+
+import requests
 
 headers = {
     "Authorization": f"Bearer {NOTION_API_KEY}",
